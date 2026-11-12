@@ -1,0 +1,3 @@
+/* Gaya tambahan kustom (mobile-first) */
+:root { --brand: #2563eb; }
+.line-clamp-2 { display: -webkit-box; -line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
