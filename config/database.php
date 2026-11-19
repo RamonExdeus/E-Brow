@@ -4,8 +4,8 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $host = 'localhost';
 $dbname = 'ebrow';
-$user = 'ffata';
-$pass = 'kora';
+$user = 'root';
+$pass = '';
 $charset = 'utf8mb4';
 
 try {
