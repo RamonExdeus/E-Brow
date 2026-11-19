@@ -1,57 +1,182 @@
-<?php
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_login();
-$pageTitle = 'Dashboard & Profil'; $u = current_user();
-$sum = db_one('SELECT COUNT(*) total, SUM(status IN ("menunggu","disetujui","dipinjam")) aktif, SUM(status="selesai") selesai FROM loans WHERE user_id=?', 'i', [$u['id']]) ?: ['total'=>0,'aktif'=>0,'selesai'=>0];
-$rows = db_all('SELECT l.*, i.nama_barang FROM loans l JOIN items i ON l.item_id=i.id WHERE l.user_id=? ORDER BY l.created_at DESC LIMIT 5', 'i', [$u['id']]);
-$labels = ['menunggu'=>'bg-yellow-100 text-yellow-700','disetujui'=>'bg-blue-100 text-blue-700','ditolak'=>'bg-red-100 text-red-700','dipinjam'=>'bg-indigo-100 text-indigo-700','dikembalikan'=>'bg-teal-100 text-teal-700','selesai'=>'bg-green-100 text-green-700'];
-$edit = isset($_GET['edit']);
-include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar.php';
-?>
-<main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
-  <h1 class="text-xl font-semibold mb-4">Dashboard & Profil Pengguna</h1>
-  <?php if (isset($_GET['success'])): ?><div class="mb-3 text-sm text-green-700 bg-green-50 p-2 rounded">Profil diperbarui.</div><?php endif; ?>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="md:col-span-1 bg-white border rounded-lg p-4">
-      <h2 class="font-medium mb-3">Informasi Akun</h2>
-      <?php if ($edit): ?>
-      <form method="post" action="/ebrow/actions/profile_action.php" class="space-y-3 text-sm">
-        <div><label class="block text-gray-500 mb-1">Nama</label><input name="nama" value="<?= e($u['nama']) ?>" class="w-full border rounded px-3 py-2" required></div>
-        <div><label class="block text-gray-500 mb-1">Email</label><input value="<?= e($u['email']) ?>" class="w-full border rounded px-3 py-2 bg-gray-100" disabled></div>
-        <div><label class="block text-gray-500 mb-1">No. HP</label><input name="no_hp" value="<?= e($u['no_hp'] ?? '') ?>" class="w-full border rounded px-3 py-2"></div>
-        <div><label class="block text-gray-500 mb-1">Alamat</label><textarea name="alamat" class="w-full border rounded px-3 py-2" rows="2"><?= e($u['alamat'] ?? '') ?></textarea></div>
-        <div class="flex gap-2"><button class="flex-1 bg-blue-600 text-white py-2 rounded">Simpan</button><a href="/ebrow/pages/user/dashboard.php" class="flex-1 text-center border py-2 rounded">Batal</a></div>
-      </form>
-      <?php else: ?>
-      <dl class="text-sm space-y-2">
-        <div><dt class="text-gray-500">Nama</dt><dd class="font-medium"><?= e($u['nama']) ?></dd></div>
-        <div><dt class="text-gray-500">Email</dt><dd><?= e($u['email']) ?></dd></div>
-        <div><dt class="text-gray-500">No. HP</dt><dd><?= e($u['no_hp'] ?? '-') ?></dd></div>
-        <div><dt class="text-gray-500">Alamat</dt><dd><?= e($u['alamat'] ?? '-') ?></dd></div>
-      </dl>
-      <a href="/ebrow/pages/user/dashboard.php?edit=1" class="block mt-4 text-center w-full border border-blue-600 text-blue-600 py-2 rounded-lg text-sm">Edit Profil</a>
-      <?php endif; ?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard & Profil Pengguna - EBROW</title>
+  <link rel="stylesheet" href="../assets/css/ebrow-user.css">
+  <style>
+    .avatar-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--dark);
+      font-size: 1.5rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .profile-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .profile-item:last-child { border-bottom: none; }
+    .profile-label { font-size: 0.78rem; color: var(--text-muted); }
+    .profile-val { font-weight: 600; font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="../index.php" class="brand">EBROW<span>.</span></a>
+  <div class="nav-links">
+    <a href="../katalog.php">Katalog Barang</a>
+    <a href="dashboard.php" class="active">Dashboard & Profil</a>
+    <a href="riwayat.php">Riwayat Peminjaman</a>
+    <a href="../auth.php" class="btn btn-outline btn-sm">Keluar</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div>
+      <h1 style="font-size:1.5rem; font-weight:800;">Halo, Sabam Nainggolan</h1>
+      <p style="color:var(--text-muted); font-size:0.9rem;">Kelola profil akun dan pantau ringkasan peminjamanmu di sini.</p>
     </div>
-    <div class="md:col-span-2 space-y-4">
-      <div class="bg-white border rounded-lg p-4">
-        <h2 class="font-medium mb-2">Ringkasan Peminjaman</h2>
-        <div class="grid grid-cols-3 gap-3 text-center text-sm">
-          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)($sum['total'] ?? 0) ?></div><div class="text-gray-500">Total</div></div>
-          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)($sum['aktif'] ?? 0) ?></div><div class="text-gray-500">Aktif</div></div>
-          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)($sum['selesai'] ?? 0) ?></div><div class="text-gray-500">Selesai</div></div>
+    <a href="form_peminjaman.php" class="btn btn-primary">+ Ajukan Peminjaman</a>
+  </div>
+
+  <!-- Ringkasan Jumlah Peminjaman -->
+  <div class="stats-grid">
+    <div class="stat-card highlight">
+      <div class="stat-label">Total Peminjaman</div>
+      <div class="stat-value">12</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Menunggu Konfirmasi</div>
+      <div class="stat-value">1</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sedang Dipinjam</div>
+      <div class="stat-value">2</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Peminjaman Selesai</div>
+      <div class="stat-value">9</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- KOLOM KIRI: PROFIL PENGGUNA (LIHAT & EDIT) -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:1.05rem;">Profil Pengguna</h3>
+        <button type="button" class="btn btn-outline btn-sm" id="btnEditProfil" onclick="toggleEditProfil()">Edit Profil</button>
+      </div>
+
+      <!-- Mode Lihat Profil -->
+      <div id="viewProfil">
+        <div class="avatar-circle">SN</div>
+        <div class="profile-item">
+          <div class="profile-label">Nama Lengkap</div>
+          <div class="profile-val">Sabam A. J. Nainggolan</div>
+        </div>
+        <div class="profile-item">
+          <div class="profile-label">Email Akun</div>
+          <div class="profile-val">sabam.user@ebrow.id</div>
+        </div>
+        <div class="profile-item">
+          <div class="profile-label">Nomor WhatsApp</div>
+          <div class="profile-val">0812-3456-7890</div>
+        </div>
+        <div class="profile-item">
+          <div class="profile-label">Alamat / Domisili</div>
+          <div class="profile-val">Jl. Dr. Mansyur, Medan</div>
         </div>
       </div>
-      <div class="bg-white border rounded-lg p-4">
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="font-medium">Aktivitas Peminjaman Terbaru</h2>
-          <a href="/ebrow/pages/user/riwayat.php" class="text-sm text-blue-600">Lihat riwayat</a>
+
+      <!-- Mode Edit Profil -->
+      <form id="formEditProfil" class="hidden" action="update_profil.php" method="POST">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" name="nama" class="form-control" value="Sabam A. J. Nainggolan" required>
         </div>
-        <?php if (!$rows): ?><p class="text-sm text-gray-500">Belum ada aktivitas.</p><?php else: ?>
-        <ul class="space-y-2 text-sm"><?php foreach ($rows as $r): ?><li class="flex justify-between"><span><?= e($r['nama_barang']) ?></span><span class="text-xs px-2 py-0.5 rounded <?= $labels[$r['status']] ?? '' ?>"><?= e($r['status']) ?></span></li><?php endforeach; ?></ul>
-        <?php endif; ?>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" value="sabam.user@ebrow.id" required>
+        </div>
+        <div class="form-group">
+          <label>Nomor WhatsApp</label>
+          <input type="text" name="no_hp" class="form-control" value="0812-3456-7890" required>
+        </div>
+        <div class="form-group">
+          <label>Alamat / Domisili</label>
+          <textarea name="alamat" class="form-control" rows="2">Jl. Dr. Mansyur, Medan</textarea>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button type="submit" class="btn btn-primary btn-sm" style="flex:1;">Simpan Perubahan</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="toggleEditProfil()">Batal</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- KOLOM KANAN: AKTIVITAS PEMINJAMAN TERBARU -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:1.05rem;">Aktivitas Peminjaman Terbaru</h3>
+        <a href="riwayat.php" style="font-size:0.85rem; font-weight:700; color:var(--dark);">Lihat Semua →</a>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Barang</th>
+              <th>Tanggal Pinjam</th>
+              <th>Tgl Kembali</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Kamera Mirrorless Sony A6000</strong></td>
+              <td>20 Nov 2026</td>
+              <td>23 Nov 2026</td>
+              <td><span class="badge badge-menunggu">Menunggu</span></td>
+            </tr>
+            <tr>
+              <td><strong>Proyektor Portable Mini</strong></td>
+              <td>15 Nov 2026</td>
+              <td>18 Nov 2026</td>
+              <td><span class="badge badge-disetujui">Disetujui</span></td>
+            </tr>
+            <tr>
+              <td><strong>Tenda Dome 4 Orang</strong></td>
+              <td>02 Nov 2026</td>
+              <td>05 Nov 2026</td>
+              <td><span class="badge badge-selesai">Selesai</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-</main>
-<?php include __DIR__ . '/../../includes/footer.php'; ?>
+</div>
+
+<script>
+  function toggleEditProfil() {
+    const view = document.getElementById('viewProfil');
+    const form = document.getElementById('formEditProfil');
+    const btn = document.getElementById('btnEditProfil');
+
+    view.classList.toggle('hidden');
+    form.classList.toggle('hidden');
+    btn.classList.toggle('hidden');
+  }
+</script>
+</body>
+</html>
