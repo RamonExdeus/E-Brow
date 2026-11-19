@@ -2,8 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 $id = (int)($_GET['id'] ?? 0);
-$stmt = $pdo->prepare('SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id WHERE i.id=?');
-$stmt->execute([$id]); $item = $stmt->fetch();
+$item = db_one('SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id WHERE i.id=?', 'i', [$id]);
 if (!$item) { http_response_code(404); $pageTitle='Barang tidak ditemukan'; include __DIR__.'/../../includes/header.php'; include __DIR__.'/../../includes/navbar.php'; echo '<main class="p-6">Barang tidak ditemukan.</main>'; include __DIR__.'/../../includes/footer.php'; exit; }
 $pageTitle = 'Detail Barang'; $avail = (int)$item['tersedia'] > 0;
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar.php';

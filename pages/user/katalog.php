@@ -4,14 +4,14 @@ require_once __DIR__ . '/../../includes/auth.php';
 $pageTitle = 'Katalog Barang';
 $q = trim($_GET['q'] ?? '');
 $kategori = $_GET['kategori'] ?? '';
-$cats = $pdo->query('SELECT id, nama_kategori FROM categories ORDER BY nama_kategori')->fetchAll();
+$cats = db_all('SELECT id, nama_kategori FROM categories ORDER BY nama_kategori');
 $sql = 'SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id WHERE 1=1';
 $params = [];
-if ($q !== '') { $sql .= ' AND i.nama_barang LIKE ?'; $params[] = "%$q%"; }
-if ($kategori !== '') { $sql .= ' AND i.category_id = ?'; $params[] = $kategori; }
+$types = '';
+if ($q !== '') { $sql .= ' AND i.nama_barang LIKE ?'; $types .= 's'; $params[] = "%$q%"; }
+if ($kategori !== '') { $sql .= ' AND i.category_id = ?'; $types .= 'i'; $params[] = (int)$kategori; }
 $sql .= ' ORDER BY i.created_at DESC';
-$stmt = $pdo->prepare($sql); $stmt->execute($params);
-$items = $stmt->fetchAll();
+$items = db_all($sql, $types, $params);
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar.php';
 ?>
 <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">

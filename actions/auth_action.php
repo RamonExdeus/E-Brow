@@ -13,10 +13,9 @@ if ($action === 'register') {
     }
     $hash = password_hash($password, PASSWORD_DEFAULT);
     try {
-        $stmt = $pdo->prepare('INSERT INTO users (nama, email, password, role) VALUES (?, ?, ?, "user")');
-        $stmt->execute([$nama, $email, $hash]);
+        db_exec('INSERT INTO users (nama, email, password, role) VALUES (?, ?, ?, "user")', 'sss', [$nama, $email, $hash]);
         header('Location: /ebrow/pages/user/auth.php?success=registered'); exit;
-    } catch (PDOException $e) {
+    } catch (mysqli_sql_exception $e) {
         header('Location: /ebrow/pages/user/auth.php?tab=register&error=exists'); exit;
     }
 }
@@ -24,9 +23,7 @@ if ($action === 'register') {
 if ($action === 'login') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $stmt = $pdo->prepare('SELECT id, nama, email, password, role, no_hp, alamat FROM users WHERE email = ?');
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    $user = db_one('SELECT id, nama, email, password, role, no_hp, alamat FROM users WHERE email = ?', 's', [$email]);
     if ($user && password_verify($password, $user['password'])) {
         unset($user['password']);
         $_SESSION['user'] = $user;

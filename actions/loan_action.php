@@ -16,13 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
     if ($tgl_kembali < $tgl_pinjam) {
         header('Location: /ebrow/pages/user/peminjaman.php?id='.$item_id.'&error=date'); exit;
     }
-    $stmt = $pdo->prepare('SELECT tersedia FROM items WHERE id=?');
-    $stmt->execute([$item_id]); $item = $stmt->fetch();
+    $item = db_one('SELECT tersedia FROM items WHERE id=?', 'i', [$item_id]);
     if (!$item || (int)$item['tersedia'] < $jumlah) {
         header('Location: /ebrow/pages/user/peminjaman.php?id='.$item_id.'&error=stok'); exit;
     }
-    $ins = $pdo->prepare('INSERT INTO loans (user_id,item_id,tanggal_pinjam,tanggal_kembali,jumlah,keperluan,status) VALUES (?,?,?,?,?,?,"menunggu")');
-    $ins->execute([$u['id'],$item_id,$tgl_pinjam,$tgl_kembali,$jumlah,$keperluan]);
+    db_exec('INSERT INTO loans (user_id,item_id,tanggal_pinjam,tanggal_kembali,jumlah,keperluan,status) VALUES (?,?,?,?,?,?,"menunggu")', 'iissis', [$u['id'], $item_id, $tgl_pinjam, $tgl_kembali, $jumlah, $keperluan]);
     header('Location: /ebrow/pages/user/riwayat.php?success=created'); exit;
 }
 header('Location: /ebrow/pages/user/riwayat.php');

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../includes/auth.php';
 require_login();
 $pageTitle = 'Form Peminjaman';
 $selected = (int)($_GET['id'] ?? 0);
-$items = $pdo->query('SELECT id, nama_barang, tersedia FROM items WHERE tersedia > 0 ORDER BY nama_barang')->fetchAll();
+$items = db_all('SELECT id, nama_barang, tersedia FROM items WHERE tersedia > 0 ORDER BY nama_barang');
 $error = $_GET['error'] ?? '';
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar.php';
 ?>

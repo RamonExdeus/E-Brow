@@ -3,7 +3,7 @@ $pageTitle = 'Beranda';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 $popular = [];
-try { $popular = $pdo->query('SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id ORDER BY i.created_at DESC LIMIT 4')->fetchAll(); } catch (Exception $e) { $popular = []; }
+try { $popular = db_all('SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id ORDER BY i.created_at DESC LIMIT 4'); } catch (Throwable $e) { $popular = []; }
 include __DIR__ . '/includes/header.php';
 include __DIR__ . '/includes/navbar.php';
 ?>

@@ -4,8 +4,7 @@ require_once __DIR__ . '/../../includes/auth.php';
 require_login();
 $pageTitle = 'Riwayat Peminjaman'; $u = current_user();
 $detailId = (int)($_GET['detail'] ?? 0);
-$stmt = $pdo->prepare('SELECT l.*, i.nama_barang FROM loans l JOIN items i ON l.item_id=i.id WHERE l.user_id=? ORDER BY l.created_at DESC');
-$stmt->execute([$u['id']]); $loans = $stmt->fetchAll();
+$loans = db_all('SELECT l.*, i.nama_barang FROM loans l JOIN items i ON l.item_id=i.id WHERE l.user_id=? ORDER BY l.created_at DESC', 'i', [$u['id']]);
 $detail = null;
 if ($detailId) { foreach ($loans as $l) { if ((int)$l['id']===$detailId) { $detail=$l; break; } } }
 $labels = ['menunggu'=>'bg-yellow-100 text-yellow-700','disetujui'=>'bg-blue-100 text-blue-700','ditolak'=>'bg-red-100 text-red-700','dipinjam'=>'bg-indigo-100 text-indigo-700','dikembalikan'=>'bg-teal-100 text-teal-700','selesai'=>'bg-green-100 text-green-700'];

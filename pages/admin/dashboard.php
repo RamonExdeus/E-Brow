@@ -3,10 +3,10 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_admin();
 $pageTitle = 'Dashboard Admin';
-$items = (int)$pdo->query('SELECT COUNT(*) FROM items')->fetchColumn();
-$users = (int)$pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
-$loans = (int)$pdo->query('SELECT COUNT(*) FROM loans')->fetchColumn();
-$recent = $pdo->query("SELECT l.*, u.nama AS peminjam, i.nama_barang FROM loans l JOIN users u ON l.user_id=u.id JOIN items i ON l.item_id=i.id ORDER BY l.created_at DESC LIMIT 8")->fetchAll();
+$items = (int)db_scalar('SELECT COUNT(*) FROM items');
+$users = (int)db_scalar('SELECT COUNT(*) FROM users');
+$loans = (int)db_scalar('SELECT COUNT(*) FROM loans');
+$recent = db_all("SELECT l.*, u.nama AS peminjam, i.nama_barang FROM loans l JOIN users u ON l.user_id=u.id JOIN items i ON l.item_id=i.id ORDER BY l.created_at DESC LIMIT 8");
 $labels = ['menunggu'=>'bg-yellow-100 text-yellow-700','disetujui'=>'bg-blue-100 text-blue-700','ditolak'=>'bg-red-100 text-red-700','dipinjam'=>'bg-indigo-100 text-indigo-700','dikembalikan'=>'bg-teal-100 text-teal-700','selesai'=>'bg-green-100 text-green-700'];
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar_admin.php';
 ?>

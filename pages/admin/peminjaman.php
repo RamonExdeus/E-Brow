@@ -4,8 +4,9 @@ require_once __DIR__ . '/../../includes/auth.php';
 require_admin();
 $pageTitle = 'Kelola Peminjaman';
 $viewId = (int)($_GET['view'] ?? 0);
-$loans = $pdo->query("SELECT l.*, u.nama AS peminjam, u.email, i.nama_barang FROM loans l JOIN users u ON l.user_id=u.id JOIN items i ON l.item_id=i.id ORDER BY l.created_at DESC")->fetchAll();
-$view = null; if ($viewId) { $s=$pdo->prepare("SELECT l.*, u.nama AS peminjam, u.email, u.no_hp, i.nama_barang FROM loans l JOIN users u ON l.user_id=u.id JOIN items i ON l.item_id=i.id WHERE l.id=?"); $s->execute([$viewId]); $view=$s->fetch(); }
+$loans = db_all("SELECT l.*, u.nama AS peminjam, u.email, i.nama_barang FROM loans l JOIN users u ON l.user_id=u.id JOIN items i ON l.item_id=i.id ORDER BY l.created_at DESC");
+$view = null;
+if ($viewId) { $view = db_one("SELECT l.*, u.nama AS peminjam, u.email, u.no_hp, i.nama_barang FROM loans l JOIN users u ON l.user_id=u.id JOIN items i ON l.item_id=i.id WHERE l.id=?", 'i', [$viewId]); }
 $labels = ['menunggu'=>'bg-yellow-100 text-yellow-700','disetujui'=>'bg-blue-100 text-blue-700','ditolak'=>'bg-red-100 text-red-700','dipinjam'=>'bg-indigo-100 text-indigo-700','dikembalikan'=>'bg-teal-100 text-teal-700','selesai'=>'bg-green-100 text-green-700'];
 $statuses = ['menunggu','disetujui','ditolak','dipinjam','dikembalikan','selesai'];
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar_admin.php';

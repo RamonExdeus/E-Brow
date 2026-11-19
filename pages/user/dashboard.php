@@ -3,10 +3,8 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_login();
 $pageTitle = 'Dashboard & Profil'; $u = current_user();
-$cnt = $pdo->prepare('SELECT COUNT(*) total, SUM(status IN ("menunggu","disetujui","dipinjam")) aktif, SUM(status="selesai") selesai FROM loans WHERE user_id=?');
-$cnt->execute([$u['id']]); $sum = $cnt->fetch() ?: ['total'=>0,'aktif'=>0,'selesai'=>0];
-$recent = $pdo->prepare('SELECT l.*, i.nama_barang FROM loans l JOIN items i ON l.item_id=i.id WHERE l.user_id=? ORDER BY l.created_at DESC LIMIT 5');
-$recent->execute([$u['id']]); $rows = $recent->fetchAll();
+$sum = db_one('SELECT COUNT(*) total, SUM(status IN ("menunggu","disetujui","dipinjam")) aktif, SUM(status="selesai") selesai FROM loans WHERE user_id=?', 'i', [$u['id']]) ?: ['total'=>0,'aktif'=>0,'selesai'=>0];
+$rows = db_all('SELECT l.*, i.nama_barang FROM loans l JOIN items i ON l.item_id=i.id WHERE l.user_id=? ORDER BY l.created_at DESC LIMIT 5', 'i', [$u['id']]);
 $labels = ['menunggu'=>'bg-yellow-100 text-yellow-700','disetujui'=>'bg-blue-100 text-blue-700','ditolak'=>'bg-red-100 text-red-700','dipinjam'=>'bg-indigo-100 text-indigo-700','dikembalikan'=>'bg-teal-100 text-teal-700','selesai'=>'bg-green-100 text-green-700'];
 $edit = isset($_GET['edit']);
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar.php';
@@ -39,9 +37,9 @@ include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includ
       <div class="bg-white border rounded-lg p-4">
         <h2 class="font-medium mb-2">Ringkasan Peminjaman</h2>
         <div class="grid grid-cols-3 gap-3 text-center text-sm">
-          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)$sum['total'] ?></div><div class="text-gray-500">Total</div></div>
-          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)$sum['aktif'] ?></div><div class="text-gray-500">Aktif</div></div>
-          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)$sum['selesai'] ?></div><div class="text-gray-500">Selesai</div></div>
+          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)($sum['total'] ?? 0) ?></div><div class="text-gray-500">Total</div></div>
+          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)($sum['aktif'] ?? 0) ?></div><div class="text-gray-500">Aktif</div></div>
+          <div class="bg-gray-50 rounded p-3"><div class="text-lg font-semibold"><?= (int)($sum['selesai'] ?? 0) ?></div><div class="text-gray-500">Selesai</div></div>
         </div>
       </div>
       <div class="bg-white border rounded-lg p-4">

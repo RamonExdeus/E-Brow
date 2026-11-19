@@ -3,11 +3,11 @@ require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/auth.php';
 require_admin();
 $pageTitle = 'Kelola Barang';
-$cats = $pdo->query('SELECT * FROM categories ORDER BY nama_kategori')->fetchAll();
+$cats = db_all('SELECT * FROM categories ORDER BY nama_kategori');
 $editId = (int)($_GET['edit'] ?? 0);
 $editItem = null;
-if ($editId) { $s=$pdo->prepare('SELECT * FROM items WHERE id=?'); $s->execute([$editId]); $editItem=$s->fetch(); }
-$items = $pdo->query('SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id ORDER BY i.created_at DESC')->fetchAll();
+if ($editId) { $editItem = db_one('SELECT * FROM items WHERE id=?', 'i', [$editId]); }
+$items = db_all('SELECT i.*, c.nama_kategori FROM items i LEFT JOIN categories c ON i.category_id=c.id ORDER BY i.created_at DESC');
 include __DIR__ . '/../../includes/header.php'; include __DIR__ . '/../../includes/navbar_admin.php';
 ?>
 <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6 space-y-6">
