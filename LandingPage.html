@@ -1,27 +1,21 @@
 <!doctype html>
 <html lang="id">
   <head>
-    <!-- Pengaturan dasar halaman -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>EBROW - Peminjaman Barang</title>
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
-
     <!-- CSS tambahan -->
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <!-- ================= NAVBAR ================= -->
+    <!--   NAVBAR    -->
     <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
       <div class="container">
         <!-- Logo EBROW -->
@@ -36,23 +30,21 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
             <li class="nav-item">
-              <a class="nav-link active" href="LandingPage.html"> Beranda </a>
+              <a class="nav-link active" href="LandingPage.html">
+                <i class ="bi bi-house-door-fill"></i> Beranda </a>
             </li>
-
             <li class="nav-item">
-              <a class="nav-link" href="#faq"> FAQ </a>
+              <a class="nav-link" href="#faq"> 
+                <i class ="bi-question-circle-fill"></i>FAQ </a>
             </li>
-
             <li class="nav-item">
-              <a class="nav-link" href="#kontak"> Kontak </a>
+              <a class="nav-link" href="#kontak">
+                <i class ="bi-envelope-fill"></i> Kontak </a>
             </li>
-
             <li class="nav-item">
-              <a class="nav-link" href="katalog.html"> Katalog </a>
+              <a class="nav-link" href="katalog.html">
+                <i class ="bi-grid-fill"></i> Katalog </a>
             </li>
-
-            
-
             <!-- Menu akun untuk masuk dan daftar -->
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-inline-flex align-items-center gap-1 account-trigger" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu Akun">
@@ -89,9 +81,7 @@
                 Butuh barang?
                 <span>Pinjam aja di EBROW</span>
               </h1>
-
               <p>Temukan barang yang kamu butuhkan tanpa harus membeli. Lebih praktis, hemat, dan mudah bersama EBROW.</p>
-
               <!-- Tombol menuju katalog -->
               <a href="katalog.html" class="btn btn-hero"> Jelajahi Katalog </a>
             </div>
@@ -107,7 +97,13 @@
                     <img src="assets/kamera.jpeg" class="d-block w-100" alt="Kamera" />
                   </div>
                   <div class="carousel-item">
+                    <img src="assets/tripod.jpeg" class="d-block w-100" alt="tripod" />
+                  </div>
+                   <div class="carousel-item">
                     <img src="assets/speaker.jpeg" class="d-block w-100" alt="Speaker" />
+                  </div>
+                  <div class="carousel-item">
+                    <img src="assets/mic.jpeg" class="d-block w-100" alt="mic" />
                   </div>
                 </div>
 
@@ -129,14 +125,13 @@
       </div>
     </section>
 
-    <!-- ================= CARA PEMINJAMAN ================= -->
+    <!--  CARA PEMINJAMAN  -->
     <section class="cara-peminjaman" id="cara-peminjaman">
       <div class="container">
         <div class="text-center mb-4">
           <h2>Cara Peminjaman</h2>
           <p>Hanya dengan tiga langkah mudah.</p>
         </div>
-
         <div class="row g-4">
           <!-- Langkah pertama -->
           <div class="col-md-4">
@@ -146,7 +141,6 @@
               <p>Pilih barang yang tersedia di katalog.</p>
             </div>
           </div>
-
           <!-- Langkah kedua -->
           <div class="col-md-4">
             <div class="step-card text-center">
@@ -155,7 +149,6 @@
               <p>Isi formulir dan tentukan jadwal peminjaman.</p>
             </div>
           </div>
-
           <!-- Langkah ketiga -->
           <div class="col-md-4">
             <div class="step-card text-center">
@@ -168,14 +161,13 @@
       </div>
     </section>
 
-    <!-- ================= BARANG POPULER ================= -->
+    <!--   BARANG POPULER  -->
     <section class="barang-populer">
       <div class="container">
         <div class="text-center mb-5">
           <h2>Barang Populer</h2>
           <p>Beberapa barang yang bisa kamu pinjam di EBROW.</p>
         </div>
-
         <div class="row g-4">
           <!-- Barang pertama -->
           <div class="col-md-4">
@@ -187,7 +179,6 @@
               </div>
             </div>
           </div>
-
           <!-- Barang kedua -->
           <div class="col-md-4">
             <div class="barang-card">
@@ -198,7 +189,6 @@
               </div>
             </div>
           </div>
-
           <!-- Barang ketiga -->
           <div class="col-md-4">
             <div class="barang-card">
@@ -218,7 +208,7 @@
       </div>
     </section>
 
-    <!-- ================= FAQ ================= -->
+    <!--  FAQ  -->
     <section id="faq" class="py-5 bg-light">
       <div class="container">
         <div class="text-center mb-4">
@@ -238,7 +228,6 @@
               <div class="accordion-body">EBROW adalah website yang menyediakan layanan informasi dan pengajuan peminjaman barang.</div>
             </div>
           </div>
-
           <!-- Pertanyaan kedua -->
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -248,7 +237,6 @@
               <div class="accordion-body">Tersedia berbagai barang elektronik dan non-elektronik sesuai katalog EBROW.</div>
             </div>
           </div>
-
           <!-- Pertanyaan ketiga -->
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -258,7 +246,6 @@
               <div class="accordion-body">Pengguna harus login, memilih barang dari katalog, kemudian mengisi formulir pengajuan peminjaman.</div>
             </div>
           </div>
-
           <!-- Pertanyaan keempat -->
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -268,7 +255,6 @@
               <div class="accordion-body">Tidak. Pengajuan akan diperiksa dan diproses terlebih dahulu oleh admin.</div>
             </div>
           </div>
-
           <!-- Pertanyaan kelima -->
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -282,7 +268,7 @@
       </div>
     </section>
 
-    <!-- ================= KONTAK ================= -->
+    <!--  KONTAK  -->
     <section id="kontak" class="py-5">
       <div class="container">
         <div class="text-center mb-4">
@@ -301,7 +287,7 @@
                     <i class="bi bi-envelope me-2"></i>
                     Email
                   </h6>
-                  <p class="text-secondary mb-0">ebrow@example.com</p>
+                  <p class="text-secondary mb-0">ebrow@gmail.com</p>
                 </div>
 
                 <hr />
@@ -321,7 +307,7 @@
       </div>
     </section>
 
-    <!-- ================= FOOTER ================= -->
+    <!--  FOOTER ================= -->
     <footer class="footer text-center">
       <div class="container">
         <h4>EBR<span>O</span>W</h4>

@@ -1,4 +1,4 @@
-/* ================= PENGATURAN DASAR ================= */
+/*  PENGATURAN DASAR  */
 body {
   background-color: #fcf2de;
   font-family: "Montserrat", sans-serif;
@@ -6,7 +6,7 @@ body {
   margin: 0;
 }
 
-/* ================= NAVBAR ================= */
+/*  NAVBAR  */
 .navbar {
   background-color: #cca333;
   padding-top: 10px;
@@ -47,7 +47,7 @@ body {
 
 /* Dropdown menu akun */
 .dropdown-menu {
-  background-color: #fde2aa;
+  background-color: #ffffff;
   min-width: 160px;
 }
 
@@ -62,7 +62,7 @@ body {
   color: #9e7818;
 }
 
-/* ================= HERO SECTION ================= */
+/*  HERO SECTION  */
 .hero {
   background-color: #faf8fe;
   padding: 40px 0;
@@ -73,7 +73,7 @@ body {
 }
 
 .hero-card {
-  background: linear-gradient(135deg, #e9c66e 0%, #f1e6cf 100%);
+  background: linear-gradient(135deg,#f1e6cf  0%,#e9c66e 100%);
   border: 1px solid rgba(73, 53, 41, 0.08);
   border-radius: 26px;
   padding: 64px;
@@ -103,7 +103,7 @@ body {
   margin: 20px 0 24px;
 }
 
-/* ================= TOMBOL HERO ================= */
+/*  TOMBOL HERO  */
 .btn-hero {
   background-color: #d6a82d;
   color: #493529;
@@ -120,7 +120,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* ================= CAROUSEL HERO ================= */
+/*  CAROUSEL HERO  */
 #heroCarousel {
   max-width: 100%;
   margin: 0 auto;
@@ -134,11 +134,12 @@ body {
 #heroCarousel img {
   width: 100%;
   height: 380px;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+  transform: scale(1.8);
 }
 
-/* ================= BARANG POPULER ================= */
+/*  BARANG POPULER  */
 .barang-populer {
   background-color: #faf8fe;
   padding: 70px 0;
@@ -170,8 +171,8 @@ body {
 
 .barang-card img {
   width: 100%;
-  height: 230px;
-  object-fit: cover;
+  height: 250px;
+  object-fit: contain;
 }
 
 .barang-info {
@@ -188,7 +189,7 @@ body {
   margin-bottom: 0;
 }
 
-/* ================= CARA PEMINJAMAN ================= */
+/*  CARA PEMINJAMAN  */
 .cara-peminjaman {
   background-color: #faf8fe;
   padding: 56px 0;
@@ -232,7 +233,7 @@ body {
   margin-bottom: 0;
 }
 
-/* ================= SECTION FAQ ================= */
+/*  SECTION FAQ  */
 #faq {
   background-color: #faf8f2;
 }
@@ -258,9 +259,9 @@ body {
   box-shadow: none;
 }
 
-/* ================= SECTION KONTAK ================= */
+/*  SECTION KONTAK  */
 #kontak {
-  background-color: #f0e0ae;
+  background-color: #e9c66e;
 }
 
 #kontak .card {
@@ -271,7 +272,7 @@ body {
   transform: translateY(-4px);
 }
 
-/* ================= SCROLL NAVBAR ================= */
+/*  SCROLL NAVBAR */
 html {
   scroll-behavior: smooth;
 }
@@ -280,7 +281,7 @@ section {
   scroll-margin-top: 75px;
 }
 
-/* ================= FOOTER ================= */
+/*  FOOTER  */
 .footer {
   background-color: #cca333;
   color: #5e4333;
@@ -303,7 +304,7 @@ section {
   margin-bottom: 6px;
 }
 
-/* ================= TAMPILAN HP ================= */
+/*  TAMPILAN HP  */
 @media (max-width: 768px) {
   .hero {
     padding: 40px 0;
@@ -337,3 +338,4 @@ section {
     padding: 40px 0;
   }
 }
+
