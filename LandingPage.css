@@ -141,7 +141,7 @@ body {
 
 /*  BARANG POPULER  */
 .barang-populer {
-  background-color: #faf8fe;
+  background-color: #fefdf8;
   padding: 70px 0;
 }
 
@@ -157,7 +157,7 @@ body {
 }
 
 .barang-card {
-  background-color: #ffffff;
+  background-color: #fcec94;
   border-radius: 15px;
   overflow: hidden;
   height: 100%;
