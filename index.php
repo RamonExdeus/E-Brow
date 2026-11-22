@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons untuk ikon menu dan informasi -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styleAdmin.css">
 
 </head>
 <body>
@@ -19,7 +19,7 @@
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
     <a href="#dashboard" class="menu-link active"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-    <a href="#barang" class="menu-link"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
+    <a href="./barang.php" class="menu-link"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
     <a href="#pengguna" class="menu-link"><i class="bi bi-person"></i><span>Data Pengguna</span></a>
     <a href="#peminjaman" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
 
