@@ -9,7 +9,7 @@
   </head>
   <body>
     <aside class="sidebar">
-    <div class="brand"><i class="bi bi-box-seam"></i><span>EBROW</span></div>
+    <div class="brand"><i class="bi bi-box"></i><span>EBROW</span></div>
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
     <a href="./adminDashboard.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>

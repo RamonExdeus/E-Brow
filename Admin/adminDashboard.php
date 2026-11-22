@@ -15,7 +15,7 @@
 <body>
   <!-- Menu samping -->
   <aside class="sidebar">
-    <div class="brand"><i class="bi bi-box-seam"></i><span>EBROW</span></div>
+    <div class="brand"><i class="bi bi-box"></i><span>EBROW</span></div>
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
     <a href="./adminDashboard.php" class="menu-link active"><i class="bi bi-grid"></i><span>Dashboard</span></a>
@@ -145,54 +145,6 @@
           </table>
         </div>
       </section>
-
-      <!-- Aktivitas terbaru -->
-      <section class="panel">
-        <div class="section-heading mb-2">
-          <h3 class="panel-title mb-0">Aktivitas Terbaru</h3>
-          <span class="date-text">Hari Ini</span>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <div class="activity-item">
-              <div class="activity-icon"><i class="bi bi-journal-check"></i></div>
-              <div>
-                <div class="activity-title">Pengajuan peminjaman masuk</div>
-                <div class="activity-description">lia mengajukan peminjaman Laptop ASUS.</div>
-                <div class="activity-time">Hari ini, 09.42</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon"><i class="bi bi-box-seam"></i></div>
-              <div>
-                <div class="activity-title">Barang baru ditambahkan</div>
-                <div class="activity-description">Tripod kamera ditambahkan ke inventaris.</div>
-                <div class="activity-time">Hari ini, 09.15</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="activity-item">
-              <div class="activity-icon"><i class="bi bi-check-circle"></i></div>
-              <div>
-                <div class="activity-title">Pengajuan telah disetujui</div>
-                <div class="activity-description">Kamera Canon untuk Andi telah disetujui.</div>
-                <div class="activity-time">Hari ini, 09.30</div>
-              </div>
-            </div>
-            <div class="activity-item">
-              <div class="activity-icon"><i class="bi bi-person-plus"></i></div>
-              <div>
-                <div class="activity-title">Pengguna baru mendaftar</div>
-                <div class="activity-description">Rina terdaftar sebagai pengguna EBROW.</div>
-                <div class="activity-time">Hari ini, 08.50</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
     <footer>
@@ -200,7 +152,24 @@
       <span>Panel Administrator</span>
     </footer>
   </main>
+  
+  <script>
+    function toggleAction(button) {
+    const container = button.parentElement;
 
+    const approve = container.querySelector('.btn-approve');
+    const reject = container.querySelector('.btn-reject');
+
+    // Tampilkan atau sembunyikan tombol
+    const isHidden = approve.hidden;
+
+    approve.hidden = !isHidden;
+    reject.hidden = !isHidden;
+
+    // Ubah teks tombol detail
+    button.textContent = isHidden ? 'Tutup Detail' : 'Lihat Detail';
+}
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
