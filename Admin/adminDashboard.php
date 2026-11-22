@@ -18,7 +18,7 @@
     <div class="brand"><i class="bi bi-box-seam"></i><span>EBROW</span></div>
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
-    <a href="#dashboard" class="menu-link active"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+    <a href="./adminDashboard.php" class="menu-link active"><i class="bi bi-grid"></i><span>Dashboard</span></a>
     <a href="./barang.php" class="menu-link"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
     <a href="#pengguna" class="menu-link"><i class="bi bi-person"></i><span>Data Pengguna</span></a>
     <a href="#peminjaman" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>

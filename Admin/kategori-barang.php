@@ -12,7 +12,7 @@
     <div class="brand"><i class="bi bi-box-seam"></i><span>EBROW</span></div>
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
-    <a href="./index.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+    <a href="./adminDashboard.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
     <a href="./barang.php" class="menu-link active"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
     <a href="#pengguna" class="menu-link"><i class="bi bi-person"></i><span>Data Pengguna</span></a>
     <a href="#peminjaman" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
@@ -46,8 +46,8 @@
       </header>
       <div class="content-area">
         <nav class="page-tabs">
-          <a class="page-tab" href="barang.php">Data Barang (18)</a>
-          <a class="page-tab active" href="kategori-barang.php">Kategori Barang (5)</a>
+          <a class="page-tab" href="barang.php">Data Barang</a>
+          <a class="page-tab active" href="kategori-barang.php">Kategori Barang</a>
         </nav>
         <section class="stats-grid">
           <div class="summary-card">
@@ -81,13 +81,7 @@
               <h3 class="panel-title">
                 Kategori Barang
               </h3>
-              <div class="panel-subtitle mb-0">
-                Kelompokkan barang agar mudah ditemukan.
-              </div>
             </div>
-            <button class="btn-primary-soft">
-              <i class="bi bi-plus"></i>Tambah Kategori
-            </button>
           </div>
           <div class="table-responsive">
             <table class="table category-table">
@@ -131,76 +125,13 @@
                 </tr>
                 <tr>
                   <td class="category-name">
-                    Peralatan Rumah Tangga
+                    Non Elektronik
                   </td>
                   <td class="category-description">
-                    Peralatan untuk kebutuhan rumah tangga sehari-hari.
+                    Peralatan non-elektronik untuk kuliah dan kegiatan kampus.
                   </td>
                   <td class="category-count">
                     3
-                  </td>
-                  <td>
-                    <div class="table-actions">
-                      <button class="btn-small">
-                        Edit
-                      </button>
-                      <button class="btn-small btn-reject">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="category-name">
-                    Peralatan Olahraga
-                  </td>
-                  <td class="category-description">
-                    Peralatan untuk aktivitas olahraga dan rekreasi.
-                  </td>
-                  <td class="category-count">
-                    3
-                  </td>
-                  <td>
-                    <div class="table-actions">
-                      <button class="btn-small">
-                        Edit
-                      </button>
-                      <button class="btn-small btn-reject">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="category-name">
-                    Perlengkapan Acara
-                  </td>
-                  <td class="category-description">
-                    Barang untuk acara dan kegiatan organisasi.
-                  </td>
-                  <td class="category-count">
-                    4
-                  </td>
-                  <td>
-                    <div class="table-actions">
-                      <button class="btn-small">
-                        Edit
-                      </button>
-                      <button class="btn-small btn-reject">
-                        Hapus
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="category-name">
-                    Lainnya
-                  </td>
-                  <td class="category-description">
-                    Barang lain di luar kategori utama.
-                  </td>
-                  <td class="category-count">
-                    0
                   </td>
                   <td>
                     <div class="table-actions">
@@ -215,9 +146,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div class="table-note">
-            5 kategori 18 barang terkelompok
           </div>
         </section>
       </div>

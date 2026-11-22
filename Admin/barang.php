@@ -12,7 +12,7 @@
     <div class="brand"><i class="bi bi-box-seam"></i><span>EBROW</span></div>
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
-    <a href="./index.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+    <a href="./adminDashboard.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
     <a href="./barang.php" class="menu-link active"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
     <a href="#pengguna" class="menu-link"><i class="bi bi-person"></i><span>Data Pengguna</span></a>
     <a href="#peminjaman" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
@@ -46,8 +46,8 @@
       </header>
       <div class="content-area">
         <nav class="page-tabs">
-          <a class="page-tab active" href="barang.php">Data Barang (18)</a>
-          <a class="page-tab" href="kategori-barang.php">Kategori Barang (5)</a>
+          <a class="page-tab active" href="barang.php">Data Barang</a>
+          <a class="page-tab" href="kategori-barang.php">Kategori Barang</a>
         </nav>
         <section class="stats-grid">
           <div class="summary-card">
@@ -101,7 +101,7 @@
                 Elektronik
               </option>
               <option>
-                Perlengkapan Acara
+                Non-Elektronik
               </option>
             </select>
             <select class="filter-field">
