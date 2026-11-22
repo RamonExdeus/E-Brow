@@ -1,0 +1,228 @@
+/*  PENGATURAN DASAR  */
+body {
+  background-color: #fcf2de;
+  font-family: "Montserrat", sans-serif;
+  color: #493529;
+  margin: 0;
+}
+
+/*  NAVBAR  */
+.navbar {
+  background-color: #cca333;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.navbar-brand {
+  font-size: 24px;
+  color: #493529;
+  letter-spacing: 0.5px;
+}
+
+.navbar-brand span {
+  color: #9e7818;
+}
+
+.nav-link {
+  color: #493529;
+  font-weight: 600;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link.active {
+  color: #ffffff;
+}
+
+.account-trigger::after {
+  vertical-align: middle;
+}
+
+.nav-link i.bi-person-circle {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Dropdown menu akun */
+.dropdown-menu {
+  background-color: #ffffff;
+  min-width: 160px;
+}
+
+.dropdown-item {
+  color: #493529;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f3e8;
+  color: #9e7818;
+}
+
+/* Halaman Katalog */
+.katalog {
+  background-color: #fcf2de;
+  color: #493529;
+}
+
+/* Judul Katalog */
+.katalog h2 {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-family: "Playfair Display", serif;
+}
+
+/* Deskripsi Katalog */
+.katalog p {
+  font-size: 16px;
+  color: #756453;
+  margin-bottom: 20px;
+}
+
+/* Kolom Pencarian */
+.katalog .form-control {
+  padding: 12px 15px;
+  border: 1px solid #d6c6a5;
+  border-radius: 8px;
+}
+
+/* Ikon Pencarian */
+.katalog .input-group-text {
+  background-color: white;
+  border: 1px solid #d6c6a5;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  color: #9e7818;
+}
+
+.input-group .form-control {
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+/* Pilihan Kategori */
+.katalog .form-select {
+  padding: 12px 15px;
+  border: 1px solid #d6c6a5;
+  border-radius: 8px;
+}
+
+/* Efek ketika kolom diklik */
+.katalog .form-control:focus,
+.katalog .form-select:focus {
+  border-color: #cca333;
+  box-shadow: 0 0 0 0.2rem rgba(204, 163, 51, 0.2);
+  outline: none;
+}
+
+.daftar-barang h3 {
+  font-size: 24px;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+}
+
+/* Deskripsi Daftar Barang */
+.daftar-barang p {
+  color: #756453;
+  font-size: 14px;
+}
+
+/* Card Barang */
+.daftar-barang .card {
+  background-color: #fffdf8;
+  border: 1px solid #eadbbd;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+/* Efek Hover */
+.daftar-barang .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(73, 53, 41, 0.15);
+}
+
+/* Gambar Barang */
+.barang-img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  padding: 0px;
+  transform: scale(1.2);
+  background-color: #fff491;
+}
+
+/* Isi Card */
+.daftar-barang .card-body {
+  padding: 18px;
+}
+
+/* Nama Barang */
+.daftar-barang .card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #493529;
+  margin-bottom: 8px;
+}
+
+/* Kategori Barang */
+.daftar-barang .card-text {
+  font-size: 14px;
+  color: #756453;
+}
+
+/* Tombol Lihat Detail */
+.daftar-barang .btn-warning {
+  background-color: #cca333;
+  border-color: #cca333;
+  color: #493529;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+.daftar-barang .btn-warning:hover {
+  background-color: #b68e24;
+  border-color: #b68e24;
+}
+
+/*  FOOTER  */
+.footer {
+  background-color: #cca333;
+  color: #5e4333;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.footer h4 {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.footer h4 span {
+  color: #9e7818;
+}
+
+.footer p {
+  font-size: 13px;
+  color: #fcfaf7;
+  margin-bottom: 6px;
+}
+
+/* Tampilan HP */
+@media (max-width: 576px) {
+  .katalog h2 {
+    font-size: 26px;
+  }
+
+  .katalog p {
+    font-size: 14px;
+  }
+}
