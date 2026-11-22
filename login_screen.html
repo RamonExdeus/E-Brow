@@ -241,6 +241,7 @@
 
     function handleAuthSubmit(event, type) {
       event.preventDefault();
+
       if (type === 'Register') {
         const pass = document.getElementById('reg-password').value;
         const confirm = document.getElementById('reg-confirm').value;
@@ -248,8 +249,17 @@
           alert('Konfirmasi password tidak sama!');
           return;
         }
+        alert('Registrasi berhasil! Selamat datang di EBROW.');
+        window.location.href = 'dashboard_user.html';
+        return;
       }
-      alert(`${type} berhasil dikirim (demo UI).`);
+
+      const email = document.getElementById('login-email').value.toLowerCase();
+      if (email.includes('admin')) {
+        window.location.href = 'Admin/adminDashboard.php';
+      } else {
+        window.location.href = 'dashboard_user.html';
+      }
     }
   </script>
 </body>
