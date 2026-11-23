@@ -14,7 +14,7 @@
 
     <a href="./adminDashboard.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
     <a href="./barang.php" class="menu-link active"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
-    <a href="#peminjaman" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
+    <a href="./kelola_peminjaman.php" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
 
     <a href="#logout" class="menu-link logout"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
   </aside>
