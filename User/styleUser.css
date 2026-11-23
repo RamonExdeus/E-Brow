@@ -1,0 +1,154 @@
+/* =========================================
+   EBROW - User Pages External Stylesheet
+   Tema Warna: Gold Mustard & Warm Cream
+   ========================================= */
+
+:root {
+  --ebrow-gold: #d5ac32;
+  --ebrow-gold-hover: #be9522;
+  --ebrow-cream: #fbf5e6;
+  --ebrow-soft-beige: #f2ebd3;
+  --ebrow-dark: #241f14;
+}
+
+body {
+  background-color: var(--ebrow-cream);
+  color: var(--ebrow-dark);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Header / Navbar Emas (Sama dengan Landing Page & Katalog) */
+.ebrow-navbar {
+  background-color: var(--ebrow-gold) !important;
+  border-bottom: 1px solid rgba(36, 31, 20, 0.12);
+}
+
+.ebrow-navbar .navbar-brand,
+.ebrow-navbar .nav-link {
+  color: var(--ebrow-dark) !important;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.ebrow-navbar .nav-link:hover,
+.ebrow-navbar .nav-link.active {
+  color: #000000 !important;
+  opacity: 0.78;
+}
+
+.ebrow-navbar .navbar-toggler {
+  border-color: rgba(36, 31, 20, 0.35);
+}
+
+/* Tombol Utama EBROW (Emas Mustard) */
+.btn-ebrow {
+  background-color: var(--ebrow-gold);
+  color: #ffffff;
+  border: 1px solid var(--ebrow-gold);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-ebrow:hover,
+.btn-ebrow:focus {
+  background-color: var(--ebrow-gold-hover);
+  border-color: var(--ebrow-gold-hover);
+  color: #ffffff;
+}
+
+/* Link Aksen EBROW */
+.ebrow-link {
+  color: #b88f1d;
+  transition: color 0.2s ease;
+}
+
+.ebrow-link:hover {
+  color: #8f6d10;
+  text-decoration: underline !important;
+}
+
+/* Form Input */
+.ebrow-input {
+  border-radius: 0.5rem;
+  border: 1px solid #dfd7c2;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ebrow-input:focus {
+  border-color: var(--ebrow-gold);
+  box-shadow: 0 0 0 0.2rem rgba(213, 172, 50, 0.22);
+}
+
+/* Toggle Show/Hide Password */
+.ebrow-password-toggle {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  text-decoration: none;
+}
+
+.ebrow-password-toggle:hover {
+  color: var(--ebrow-dark) !important;
+}
+
+/* Kotak Informasi */
+.ebrow-info-box {
+  background-color: var(--ebrow-soft-beige);
+  border: 1px solid #e5dcc0;
+}
+
+/* Kartu Statistik Dashboard */
+.user-stat-card {
+  background-color: #ffffff;
+  border-color: #ece4ce !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.user-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(36, 31, 20, 0.06);
+}
+
+/* Kartu Daftar Status */
+.user-status-card {
+  border-color: #ece4ce !important;
+  transition: border-color 0.2s ease;
+}
+
+.user-status-card:hover {
+  border-color: var(--ebrow-gold) !important;
+}
+
+/* Thumbnail Gambar Barang */
+.user-item-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+}
+
+.user-item-thumb-lg {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+.user-item-subtext {
+  font-size: 0.78rem;
+}
+
+/* Avatar Profil Pengguna */
+.user-avatar-circle {
+  width: 90px;
+  height: 90px;
+  background-color: var(--ebrow-soft-beige) !important;
+}
+
+.user-avatar-icon {
+  font-size: 2.8rem;
+  color: var(--ebrow-dark) !important;
+}
