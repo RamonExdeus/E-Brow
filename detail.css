@@ -1,0 +1,94 @@
+/*  PENGATURAN DASAR  */
+body {
+  background-color: #fcf2de;
+  font-family: "Montserrat", sans-serif;
+  color: #493529;
+  margin: 0;
+}
+
+/*  NAVBAR  */
+.navbar {
+  background-color: #cca333;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.navbar-brand {
+  font-size: 24px;
+  color: #493529;
+  letter-spacing: 0.5px;
+}
+
+.navbar-brand span {
+  color: #9e7818;
+}
+
+.nav-link {
+  color: #493529;
+  font-weight: 600;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link.active {
+  color: #ffffff;
+}
+
+.account-trigger::after {
+  vertical-align: middle;
+}
+
+.nav-link i.bi-person-circle {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* Dropdown menu akun */
+.dropdown-menu {
+  background-color: #ffffff;
+  min-width: 160px;
+}
+
+.dropdown-item {
+  color: #493529;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f3e8;
+  color: #9e7818;
+}
+
+/* Halaman Detail Barang */
+.detail-barang .card {
+  max-width: 480px;
+  margin: 0 auto;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.detail-barang img {
+  width: 100%;
+  height: 320px;
+  object-fit: contain;
+  padding: 15px;
+  background-color: rgb(252, 231, 138);
+}
+.detail-barang h2 {
+  margin-bottom: 15px;
+}
+
+.detail-barang .badge {
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+#tombolPeminjaman {
+  display: inline-block;
+  width: fit-content;
+}
+
+
