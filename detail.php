@@ -15,27 +15,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
 
     <!-- CSS tambahan -->
-    <link rel="stylesheet" href="detail.css" />
+    <link rel="stylesheet" href="assets/css/detail.css" />
   </head>
 
   <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="LandingPage.html"> EBR<span>O</span>W </a>
+        <a class="navbar-brand fw-bold" href="index.html"> EBR<span>O</span>W </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
             <li class="nav-item">
-              <a class="nav-link" href="LandingPage.html"> <i class="bi bi-house-door-fill"></i> Beranda </a>
+              <a class="nav-link" href="index.html"> <i class="bi bi-house-door-fill"></i> Beranda </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="LandingPage.html#faq"> <i class="bi bi-question-circle-fill"></i> FAQ </a>
+              <a class="nav-link" href="index.html#faq"> <i class="bi bi-question-circle-fill"></i> FAQ </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="LandingPage.html#kontak"> <i class="bi bi-envelope-fill"></i> Kontak </a>
+              <a class="nav-link" href="index.html#kontak"> <i class="bi bi-envelope-fill"></i> Kontak </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="katalog.html"> <i class="bi bi-grid-fill"></i> Katalog </a>
@@ -46,10 +46,10 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="accountDropdown">
                 <li>
-                  <a class="dropdown-item py-2" href="login.php"> <i class="bi bi-box-arrow-in-right me-2"></i> Masuk </a>
+                  <a class="dropdown-item py-2" href="login_screen.html"> <i class="bi bi-box-arrow-in-right me-2"></i> Masuk </a>
                 </li>
                 <li>
-                  <a class="dropdown-item py-2" href="register.php"> <i class="bi bi-person-plus me-2"></i> Daftar </a>
+                  <a class="dropdown-item py-2" href="login_screen.html?tab=register"> <i class="bi bi-person-plus me-2"></i> Daftar </a>
                 </li>
               </ul>
             </li>
@@ -65,7 +65,7 @@
           <!-- Foto Barang -->
           <div class="col-md-5">
             <div class="card border-0 shadow-sm">
-              <img src="assets/laptop.jpeg" id="gambarBarang" class="img-fluid rounded" alt="Laptop" />
+              <img src="assets/images/laptop.jpeg" id="gambarBarang" class="img-fluid rounded" alt="Laptop" />
             </div>
           </div>
 
@@ -89,7 +89,7 @@
     </section>
    
     <!-- JavaScript -->
-    <script src="detail.js"></script>
+    <script src="assets/js/detail.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

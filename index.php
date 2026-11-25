@@ -11,7 +11,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
     <!-- CSS tambahan -->
-    <link rel="stylesheet" href="LandingPage.css" />
+    <link rel="stylesheet" href="assets/css/index.css" />
   </head>
 
   <body>
@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
       <div class="container">
         <!-- Logo EBROW -->
-        <a class="navbar-brand fw-bold" href="LandingPage.html"> 
+        <a class="navbar-brand fw-bold" href="index.html"> 
           <i class="bi bi-box"></i> EBR<span>O</span>W </a>
 
         <!-- Tombol menu untuk tampilan HP -->
@@ -31,7 +31,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
             <li class="nav-item">
-              <a class="nav-link active" href="./LandingPage.html"> <i class="bi bi-house-door-fill"></i> Beranda </a>
+              <a class="nav-link active" href="index.html"> <i class="bi bi-house-door-fill"></i> Beranda </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#faq"> <i class="bi bi-question-circle-fill"></i>FAQ </a>
@@ -40,7 +40,7 @@
               <a class="nav-link" href="#kontak"> <i class="bi bi-envelope-fill"></i> Kontak </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./katalog.html"> <i class="bi bi-grid-fill"></i> Katalog </a>
+              <a class="nav-link" href="katalog.html"> <i class="bi bi-grid-fill"></i> Katalog </a>
             </li>
             <!-- Menu akun untuk masuk dan daftar -->
             <li class="nav-item dropdown">
@@ -49,13 +49,13 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="accountDropdown">
                 <li>
-                  <a class="dropdown-item py-2" href="./login_screen.html">
+                  <a class="dropdown-item py-2" href="login_screen.html">
                     <i class="bi bi-box-arrow-in-right me-2"></i>
                     Masuk
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item py-2" href="./login_screen.html">
+                  <a class="dropdown-item py-2" href="login_screen.html?tab=register">
                     <i class="bi bi-person-plus me-2"></i>
                     Daftar
                   </a>
@@ -88,19 +88,19 @@
               <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                    <img src="assets/laptop.jpeg" class="d-block w-100" alt="Laptop" />
+                    <img src="assets/images/laptop.jpeg" class="d-block w-100" alt="Laptop" />
                   </div>
                   <div class="carousel-item">
-                    <img src="assets/kamera.jpeg" class="d-block w-100" alt="Kamera" />
+                    <img src="assets/images/kamera.jpeg" class="d-block w-100" alt="Kamera" />
                   </div>
                   <div class="carousel-item">
-                    <img src="assets/tripod.jpeg" class="d-block w-100" alt="tripod" />
+                    <img src="assets/images/tripod.jpeg" class="d-block w-100" alt="tripod" />
                   </div>
                   <div class="carousel-item">
-                    <img src="assets/speaker.jpeg" class="d-block w-100" alt="Speaker" />
+                    <img src="assets/images/speaker.jpeg" class="d-block w-100" alt="Speaker" />
                   </div>
                   <div class="carousel-item">
-                    <img src="assets/mic.jpeg" class="d-block w-100" alt="mic" />
+                    <img src="assets/images/mic.jpeg" class="d-block w-100" alt="mic" />
                   </div>
                 </div>
 
@@ -169,7 +169,7 @@
           <!-- Barang pertama -->
           <div class="col-md-4">
             <div class="barang-card">
-              <img src="assets/laptop.jpeg" alt="Laptop" />
+              <img src="assets/images/laptop.jpeg" alt="Laptop" />
               <div class="barang-info">
                 <h5>Laptop</h5>
                 <p>Perangkat untuk mendukung kegiatan kuliah.</p>
@@ -179,7 +179,7 @@
           <!-- Barang kedua -->
           <div class="col-md-4">
             <div class="barang-card">
-              <img src="assets/kamera.jpeg" alt="Kamera" />
+              <img src="assets/images/kamera.jpeg" alt="Kamera" />
               <div class="barang-info">
                 <h5>Kamera</h5>
                 <p>Untuk dokumentasi dan kebutuhan kegiatan.</p>
@@ -189,7 +189,7 @@
           <!-- Barang ketiga -->
           <div class="col-md-4">
             <div class="barang-card">
-              <img src="assets/speaker.jpeg" alt="Speaker" />
+              <img src="assets/images/speaker.jpeg" alt="Speaker" />
               <div class="barang-info">
                 <h5>Speaker</h5>
                 <p>Mendukung kebutuhan audio berbagai kegiatan.</p>

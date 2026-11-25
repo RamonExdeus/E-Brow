@@ -6,18 +6,18 @@
     <title>Tambah Barang - EBROW</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="styleAdmin.css" rel="stylesheet">
+    <link href="../assets/css/admin.css" rel="stylesheet">
 </head>
 <body>
     <aside class="sidebar">
     <div class="brand"><i class="bi bi-box"></i><span>EBROW</span></div>
     <div class="menu-title">PANEL ADMINISTRATOR</div>
 
-    <a href="./adminDashboard.php" class="menu-link active"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-    <a href="./barang.php" class="menu-link"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
-    <a href="./kelola_peminjaman.php" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
+    <a href="admin_dashboard.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+    <a href="barang.php" class="menu-link active"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
+    <a href="kelola_peminjaman.php" class="menu-link"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
 
-    <a href="#logout" class="menu-link logout"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+    <a href="../login_screen.html" class="menu-link logout"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
   </aside>
 
     <main class="main-content">

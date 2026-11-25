@@ -6,7 +6,7 @@ const idBarang = params.get("id");
 const daftarBarang = {
   laptop: {
     nama: "Laptop",
-    gambar: "assets/laptop.jpeg",
+    gambar: "assets/images/laptop.jpeg",
     kategori: "Elektronik",
     status: "Tersedia",
     deskripsi: "Laptop yang dapat digunakan untuk membantu kegiatan perkuliahan, mengerjakan tugas, dan presentasi.",
@@ -17,7 +17,7 @@ const daftarBarang = {
 
   kamera: {
     nama: "Kamera",
-    gambar: "assets/kamera.jpeg",
+    gambar: "assets/images/kamera.jpeg",
     kategori: "Elektronik",
     status: "Tersedia",
     deskripsi: "Kamera yang dapat digunakan untuk dokumentasi kegiatan, mengambil foto, dan membuat video.",
@@ -28,7 +28,7 @@ const daftarBarang = {
 
   speaker: {
     nama: "Speaker",
-    gambar: "assets/speaker.jpeg",
+    gambar: "assets/images/speaker.jpeg",
     kategori: "Elektronik",
     status: "Tersedia",
     deskripsi: "Speaker yang digunakan untuk mendukung kebutuhan audio dalam presentasi, acara, dan kegiatan lainnya.",
@@ -39,7 +39,7 @@ const daftarBarang = {
 
   mic: {
     nama: "Microphone",
-    gambar: "assets/mic.jpeg",
+    gambar: "assets/images/mic.jpeg",
     kategori: "Elektronik",
     status: "Tidak tersedia",
     deskripsi: "Microphone yang digunakan untuk membantu penyampaian suara saat presentasi, seminar, dan acara.",
@@ -50,7 +50,7 @@ const daftarBarang = {
 
   proyektor: {
     nama: "Proyektor",
-    gambar: "assets/proyektor.jpeg",
+    gambar: "assets/images/proyektor.jpeg",
     kategori: "Elektronik",
     status: "Tersedia",
     deskripsi: "Proyektor yang digunakan untuk menampilkan materi presentasi atau tampilan visual ke layar.",
@@ -61,7 +61,7 @@ const daftarBarang = {
 
   tripod: {
     nama: "Tripod",
-    gambar: "assets/tripod.jpeg",
+    gambar: "assets/images/tripod.jpeg",
     kategori: "Non-Elektronik",
     status: "Tidak tersedia",
     deskripsi: "Tripod yang digunakan sebagai penyangga kamera atau ponsel saat mengambil foto dan video.",
@@ -72,7 +72,7 @@ const daftarBarang = {
 
   kursi: {
     nama: "Kursi Lipat",
-    gambar: "assets/kursi.jpeg",
+    gambar: "assets/images/kursi.jpeg",
     kategori: "Non-Elektronik",
     status: "Tersedia",
     deskripsi: "Kursi lipat yang dapat digunakan sebagai tempat duduk tambahan dalam kegiatan perkuliahan atau acara.",
@@ -83,7 +83,7 @@ const daftarBarang = {
 
   meja: {
     nama: "Meja Lipat",
-    gambar: "assets/meja.jpeg",
+    gambar: "assets/images/meja.jpeg",
     kategori: "Non-Elektronik",
     status: "Tersedia",
     deskripsi: "Meja lipat yang dapat digunakan untuk mendukung kegiatan belajar, rapat, dan berbagai acara.",
@@ -94,7 +94,7 @@ const daftarBarang = {
 
   "papan-tulis": {
     nama: "Papan Tulis",
-    gambar: "assets/papan-tulis.jpeg",
+    gambar: "assets/images/papan-tulis.jpeg",
     kategori: "Non-Elektronik",
     status: "Tidak tersedia",
     deskripsi: "Papan tulis yang dapat digunakan untuk menulis materi, menyampaikan ide, dan menjelaskan informasi.",
@@ -105,7 +105,7 @@ const daftarBarang = {
 
   "stand-poster": {
     nama: "Stand Poster",
-    gambar: "assets/stand-poster.jpeg",
+    gambar: "assets/images/stand-poster.jpeg",
     kategori: "Non-Elektronik",
     status: "Tersedia",
     deskripsi: "Stand poster yang digunakan untuk menopang dan menampilkan poster atau informasi dalam kegiatan.",

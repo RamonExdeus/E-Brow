@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: ebrow
 -- ------------------------------------------------------
--- Server version	8.0.30
+-- Server version   8.0.30
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -19,7 +19,7 @@
 -- Table structure for table `barang`
 --
 
-DROP TABLE IF EXISTS `barang`;
+DROP TABLE IF EXISTS `barang`;open
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `barang` (
