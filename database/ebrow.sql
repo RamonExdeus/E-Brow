@@ -1,28 +1,26 @@
--- MySQL dump 10.13  Distrib 8.0.30, for Win64 (x86_64)
---
--- Host: localhost    Database: ebrow
--- ------------------------------------------------------
--- Server version   8.0.30
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               8.0.30 - MySQL Community Server - GPL
+-- Server OS:                    Win64
+-- HeidiSQL Version:             12.1.0.6537
+-- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `barang`
---
 
-DROP TABLE IF EXISTS `barang`;open
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `barang` (
+-- Dumping database structure for ebrow
+CREATE DATABASE IF NOT EXISTS `ebrow` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `ebrow`;
+
+-- Dumping structure for table ebrow.barang
+CREATE TABLE IF NOT EXISTS `barang` (
   `id_barang` int unsigned NOT NULL AUTO_INCREMENT,
   `kode_barang` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_kategori` int unsigned NOT NULL,
@@ -41,50 +39,22 @@ CREATE TABLE `barang` (
   KEY `fk_barang_kategori` (`id_kategori`),
   CONSTRAINT `fk_barang_kategori` FOREIGN KEY (`id_kategori`) REFERENCES `kategori_barang` (`id_kategori`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `barang`
---
+-- Dumping data for table ebrow.barang: ~0 rows (approximately)
 
-LOCK TABLES `barang` WRITE;
-/*!40000 ALTER TABLE `barang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `barang` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `kategori_barang`
---
-
-DROP TABLE IF EXISTS `kategori_barang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `kategori_barang` (
+-- Dumping structure for table ebrow.kategori_barang
+CREATE TABLE IF NOT EXISTS `kategori_barang` (
   `id_kategori` int unsigned NOT NULL AUTO_INCREMENT,
   `nama_kategori` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_kategori`),
   UNIQUE KEY `nama_kategori` (`nama_kategori`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `kategori_barang`
---
+-- Dumping data for table ebrow.kategori_barang: ~0 rows (approximately)
 
-LOCK TABLES `kategori_barang` WRITE;
-/*!40000 ALTER TABLE `kategori_barang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `kategori_barang` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `peminjaman`
---
-
-DROP TABLE IF EXISTS `peminjaman`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `peminjaman` (
+-- Dumping structure for table ebrow.peminjaman
+CREATE TABLE IF NOT EXISTS `peminjaman` (
   `id_peminjaman` int unsigned NOT NULL AUTO_INCREMENT,
   `nomor_peminjaman` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_user` int unsigned NOT NULL,
@@ -114,25 +84,11 @@ CREATE TABLE `peminjaman` (
   CONSTRAINT `fk_peminjaman_barang` FOREIGN KEY (`id_barang`) REFERENCES `barang` (`id_barang`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_peminjaman_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `peminjaman`
---
+-- Dumping data for table ebrow.peminjaman: ~0 rows (approximately)
 
-LOCK TABLES `peminjaman` WRITE;
-/*!40000 ALTER TABLE `peminjaman` DISABLE KEYS */;
-/*!40000 ALTER TABLE `peminjaman` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
+-- Dumping structure for table ebrow.users
+CREATE TABLE IF NOT EXISTS `users` (
   `id_user` int unsigned NOT NULL AUTO_INCREMENT,
   `nama_lengkap` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nim_anggota` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -148,28 +104,11 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `nim_anggota` (`nim_anggota`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `users`
---
+-- Dumping data for table ebrow.users: ~0 rows (approximately)
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping routines for database 'ebrow'
---
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2026-11-24 17:47:44
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
