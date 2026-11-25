@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -254,7 +255,8 @@
         return;
       }
 
-      const email = document.getElementById('login-email').value.toLowerCase();
+      const email = document.getEle
+      mentById('login-email').value.toLowerCase();
       if (email.includes('admin')) {
         window.location.href = 'admin/admin_dashboard.php';
       } else {

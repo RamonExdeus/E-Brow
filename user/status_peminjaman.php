@@ -63,7 +63,7 @@
           <h1 class="h4 fw-bold text-dark mb-1">Informasi &amp; Status Peminjaman</h1>
           <p class="small text-secondary mb-0">Lacak progres pengajuan peminjaman, jadwal pengambilan, dan instruksi dari admin.</p>
         </div>
-        <a href="../katalog.php" class="btn btn-ebrow px-4 py-2 fw-semibold">
+        <a href="form_peminjaman.php" class="btn btn-ebrow px-4 py-2 fw-semibold">
           <i class="bi bi-plus-lg me-1"></i> Ajukan Peminjaman
         </a>
       </div>
