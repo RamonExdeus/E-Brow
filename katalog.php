@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EBROW - Peminjaman Barang</title>
+    <title>Katalog Barang - EBROW</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Bootstrap Icons -->
@@ -14,11 +14,12 @@
     <link rel="stylesheet" href="assets/css/katalog.css" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
+
+  <!--   Navbar   -->
+  <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
     <div class="container-fluid px-0">
       <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.php">
-        <i class="bi bi-box fs-5"></i>
-        <span>EBROW</span>
+        <i class="bi bi-box fs-5"></i> EBROW
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser">
         <span class="navbar-toggler-icon"></span>
@@ -30,7 +31,7 @@
             <a class="nav-link" href="user/dashboard_user.php">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="user/katalog.php">Katalog Barang</a>
+            <a class="nav-link active" href="katalog.php">Katalog Barang</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="user/status_peminjaman.php">Status Peminjaman</a>
@@ -39,7 +40,7 @@
             <a class="nav-link" href="user/riwayat_peminjaman.php">Riwayat</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+            <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle fs-5"></i>
               <span>Akun Saya</span>
             </a>
@@ -240,13 +241,10 @@
       </div>
     </section>
 
-    <!--  FOOTER ================= -->
-    <footer class="footer text-center">
-      <div class="container">
-        <h4>EBR<span>O</span>W</h4>
-        <p>Platform peminjaman barang yang praktis dan mudah.</p>
-        <p class="mb-0">&copy; 2026 EBROW. All Rights Reserved.</p>
-      </div>
+    <!-- Footer -->
+    <footer class="container py-3 text-muted small d-flex flex-column flex-sm-row justify-content-between gap-2">
+      <span>&copy; 2026 EBROW. Semua hak dilindungi.</span>
+      <span>Pinjam dengan mudah. Kembalikan dengan tanggung jawab.</span>
     </footer>
 
     <script src="assets/js/katalog.js"></script>

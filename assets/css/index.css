@@ -1,6 +1,6 @@
 /*  PENGATURAN DASAR  */
 body {
-  background-color: #fcf2de;
+  background-color: #faf8fe;
   font-family: "Montserrat", sans-serif;
   color: #493529;
   margin: 0;
@@ -17,10 +17,6 @@ body {
   font-size: 24px;
   color: #493529;
   letter-spacing: 0.5px;
-}
-
-.navbar-brand span {
-  color: #9e7818;
 }
 
 .nav-link {
@@ -64,7 +60,6 @@ body {
 
 /*  HERO SECTION  */
 .hero {
-  background-color: #faf8fe;
   padding: 40px 0;
 }
 
@@ -91,9 +86,8 @@ body {
 }
 
 .hero h1 span {
-  color: #a77f1c;
-  display: block;
-  margin-top: 4px;
+  color :#cca333;
+  display:block;
 }
 
 .hero p {

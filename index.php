@@ -20,7 +20,7 @@
       <div class="container">
         <!-- Logo EBROW -->
         <a class="navbar-brand fw-bold" href="index.php"> 
-          <i class="bi bi-box"></i> EBR<span>O</span>W </a>
+          <i class="bi bi-box"></i> EBROW </a>
 
         <!-- Tombol menu untuk tampilan HP -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,9 +72,6 @@
                   </div>
                   <div class="carousel-item">
                     <img src="assets/images/kamera.jpeg" class="d-block w-100" alt="Kamera" />
-                  </div>
-                  <div class="carousel-item">
-                    <img src="assets/images/tripod.jpeg" class="d-block w-100" alt="tripod" />
                   </div>
                   <div class="carousel-item">
                     <img src="assets/images/speaker.jpeg" class="d-block w-100" alt="Speaker" />
@@ -180,7 +177,7 @@
 
         <!-- Tombol melihat seluruh barang -->
         <div class="text-center mt-5">
-          <a href="katalog.html" class="btn btn-warning"> Lihat Semua Barang </a>
+          <a href="katalog.php" class="btn btn-warning"> Lihat Semua Barang </a>
         </div>
       </div>
     </section>
@@ -284,14 +281,12 @@
       </div>
     </section>
 
-    <!--  FOOTER ================= -->
-    <footer class="footer text-center">
-      <div class="container">
-        <h4>EBR<span>O</span>W</h4>
-        <p>Platform peminjaman barang yang praktis dan mudah.</p>
-        <p class="mb-0">&copy; 2026 EBROW. All Rights Reserved.</p>
-      </div>
+    <!-- Footer -->
+    <footer class="container py-3 text-muted small d-flex flex-column flex-sm-row justify-content-between gap-2">
+      <span>&copy; 2026 EBROW. Semua hak dilindungi.</span>
+      <span>Pinjam dengan mudah. Kembalikan dengan tanggung jawab.</span>
     </footer>
+
 
     <!-- Bootstrap JavaScript untuk navbar, carousel, dan FAQ -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

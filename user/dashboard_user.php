@@ -27,7 +27,7 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
         <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
           <li class="nav-item">
-            <a class="nav-link active fw-semibold" href="dashboard_user.php">Dashboard</a>
+            <a class="nav-link active" href="dashboard_user.php">Dashboard</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="../katalog.php">Katalog Barang</a>
