@@ -1,3 +1,64 @@
+<?php
+require_once __DIR__ . '/../database/repository.php';
+require_once __DIR__ . '/partials/ui.php';
+
+$notifikasi = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confirm_return') {
+    $admin = fetchAdmin();
+    $hasil = konfirmasiPengembalian((int) ($_POST['id'] ?? 0), (int) $admin['id_user']);
+    $notifikasi = $hasil['message'];
+}
+
+$admin = fetchAdmin();
+$stats = fetchDashboardStats();
+
+$cari = trim((string) ($_GET['search'] ?? ''));
+$statusDipilih = (string) ($_GET['status'] ?? '');
+$sort = ($_GET['sort'] ?? 'terbaru') === 'terlama' ? 'terlama' : 'terbaru';
+$batas = 8;
+
+$halaman = max(1, (int) ($_GET['page'] ?? 1));
+[$totalPengajuan, $daftarPengajuan] = fetchPeminjamanList($statusDipilih, $cari, $batas, ($halaman - 1) * $batas, $sort);
+$totalHalaman = max(1, (int) ceil($totalPengajuan / $batas));
+if ($halaman > $totalHalaman) {
+    $halaman = $totalHalaman;
+    [$totalPengajuan, $daftarPengajuan] = fetchPeminjamanList($statusDipilih, $cari, $batas, ($halaman - 1) * $batas, $sort);
+}
+
+$returnCari = trim((string) ($_GET['return_search'] ?? ''));
+$halamanReturn = max(1, (int) ($_GET['return_page'] ?? 1));
+[$totalPengembalian, $daftarPengembalian] = fetchReturnList($returnCari, $batas, ($halamanReturn - 1) * $batas);
+$totalHalamanReturn = max(1, (int) ceil($totalPengembalian / $batas));
+if ($halamanReturn > $totalHalamanReturn) {
+    $halamanReturn = $totalHalamanReturn;
+    [$totalPengembalian, $daftarPengembalian] = fetchReturnList($returnCari, $batas, ($halamanReturn - 1) * $batas);
+}
+
+$daftarParams = adminListParams($_GET);
+$kembaliDetailParams = array_diff_key($daftarParams, array_flip(['tab', 'return_search', 'return_page', 'scroll']));
+$urlDengan = static function (array $ubah = []) use ($daftarParams): string {
+    $params = array_merge($daftarParams, $ubah);
+
+    foreach ($params as $kunci => $nilai) {
+        if ($nilai === '' || $nilai === null || $nilai === 0) {
+            unset($params[$kunci]);
+        }
+    }
+    if (($params['sort'] ?? '') === 'terbaru') {
+        unset($params['sort']);
+    }
+    if ((int) ($params['page'] ?? 0) <= 1) {
+        unset($params['page']);
+    }
+    if ((int) ($params['return_page'] ?? 0) <= 1) {
+        unset($params['return_page']);
+    }
+    unset($params['scroll']);
+
+    return adminUrl('kelola_peminjaman.php', $params);
+};
+$statusFilter = ['Semua', 'Menunggu', 'Disetujui', 'Ditolak', 'Sedang Dipinjam'];
+?>
 <!DOCTYPE html>
 <html lang="id">
     <head>
@@ -9,16 +70,7 @@
         <link rel="stylesheet" href="../assets/css/admin.css">
     </head>
     <body>
-    <aside class="sidebar">
-    <div class="brand"><i class="bi bi-box"></i><span>EBROW</span></div>
-    <div class="menu-title">PANEL ADMINISTRATOR</div>
-
-    <a href="admin_dashboard.php" class="menu-link"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-    <a href="barang.php" class="menu-link"><i class="bi bi-box-seam"></i><span>Data Barang</span></a>
-    <a href="kelola_peminjaman.php" class="menu-link active"><i class="bi bi-arrow-left-right"></i><span>Data Peminjaman</span></a>
-
-    <a href="../login_screen.html" class="menu-link logout"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
-  </aside>
+    <?php renderSidebar('peminjaman'); ?>
         <main class="main-content">
             <header class="topbar">
                 <div class="page-heading">
@@ -29,31 +81,34 @@
                     <i class="bi bi-bell"></i>
                     <div class="avatar"><i class="bi bi-person-fill"></i></div>
                     <div class="admin-details">
-                        <div class="admin-name">Rizky Pratama</div>
+                        <div class="admin-name"><?= esc($admin['nama_lengkap']) ?></div>
                         <div class="admin-role">Administrator</div>
                     </div>
                 </div>
             </header>
             <div class="content-area">
+                <?php if ($notifikasi !== ''): ?>
+                    <div class="alert alert-info py-2" role="alert"><?= esc($notifikasi) ?></div>
+                <?php endif; ?>
                 <section class="stats-grid stats-four">
                     <div class="summary-card">
                         <div class="summary-label">Total Pengajuan</div>
-                        <div class="summary-bottom"><span class="summary-number">284</span><span class="summary-icon"><i class="bi bi-clipboard-check"></i></span></div>
+                        <div class="summary-bottom"><span class="summary-number"><?= (int) $stats['total_peminjaman'] ?></span><span class="summary-icon"><i class="bi bi-clipboard-check"></i></span></div>
                     </div>
                     <div class="summary-card highlighted">
                         <div class="summary-label">Menunggu Persetujuan</div>
                         <div class="summary-bottom">
-                            <span class="summary-number" id="countPending">7</span><span class="summary-icon"><i class="bi bi-clock"></i></span>
+                            <span class="summary-number" id="countPending"><?= (int) $stats['menunggu'] ?></span><span class="summary-icon"><i class="bi bi-clock"></i></span>
                         </div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-label">Sedang Dipinjam</div>
-                        <div class="summary-bottom"><span class="summary-number">5</span><span class="summary-icon"><i class="bi bi-arrow-left-right"></i></span></div>
+                        <div class="summary-bottom"><span class="summary-number"><?= (int) $stats['sedang_dipinjam'] ?></span><span class="summary-icon"><i class="bi bi-arrow-left-right"></i></span></div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-label">Menunggu Pengembalian</div>
                         <div class="summary-bottom">
-                            <span class="summary-number" id="countReturn">2</span><span class="summary-icon"><i class="bi bi-box-arrow-in-left"></i></span>
+                            <span class="summary-number" id="countReturn"><?= (int) $stats['menunggu_pengembalian'] ?></span><span class="summary-icon"><i class="bi bi-box-arrow-in-left"></i></span>
                         </div>
                     </div>
                 </section>
@@ -62,21 +117,29 @@
                 </div>
                 <section class="panel tab-panel" id="panelPengajuan">
                     <div class="filter-grid">
-                        <div class="search-wrap">
-                            <i class="bi bi-search"></i><input class="search-field" id="searchPengajuan" type="search" placeholder="Cari nama peminjam atau barang...">
-                        </div>
-                        <div class="input-icon">
-                            <i class="bi bi-calendar3"></i>
-                            <input class="filter-field" type="text" placeholder="Semua tanggal peminjaman" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
-                        </div>
+                        <form method="get" class="search-form">
+                            <div class="search-wrap">
+                                <i class="bi bi-search"></i>
+                                <input class="search-field" id="searchPengajuan" name="search" type="search" value="<?= esc($cari) ?>" placeholder="Cari nama peminjam atau barang...">
+                            </div>
+                            <?php foreach ($daftarParams as $kunci => $nilai): ?>
+                                <?php if (in_array($kunci, ['search', 'scroll', 'tab', 'return_search', 'return_page'], true)) continue; ?>
+                                <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+                            <?php endforeach; ?>
+                            <button type="submit" class="btn-small">Cari</button>
+                        </form>
                         <div class="status-filters">
-                            <button class="filter-chip active" data-status="Semua">Semua Status</button>
-                            <button class="filter-chip" data-status="Menunggu">Menunggu</button>
-                            <button class="filter-chip" data-status="Disetujui">Disetujui</button>
-                            <button class="filter-chip" data-status="Ditolak">Ditolak</button>
-                            <button class="filter-chip" data-status="Sedang Dipinjam">Sedang Dipinjam</button>
+                            <?php foreach ($statusFilter as $status): ?>
+                                <a class="filter-chip <?= $statusDipilih === $status ? 'active' : '' ?>" href="<?= esc($urlDengan(['status' => $status === 'Semua' ? '' : $status, 'page' => 1])) ?>">
+                                    <?= $status === 'Semua' ? 'Semua Status' : esc($status) ?>
+                                </a>
+                            <?php endforeach; ?>
                         </div>
-                        <select class="filter-field"><option>Semua status peminjaman</option><option>Terbaru</option><option>Terlama</option></select>
+                        <select class="filter-field" onchange="if(this.value) window.location.href=this.value;">
+                            <option value="">Urutkan</option>
+                            <option value="<?= esc($urlDengan(['sort' => 'terbaru', 'page' => 1])) ?>" <?= $sort === 'terbaru' ? 'selected' : '' ?>>Terbaru</option>
+                            <option value="<?= esc($urlDengan(['sort' => 'terlama', 'page' => 1])) ?>" <?= $sort === 'terlama' ? 'selected' : '' ?>>Terlama</option>
+                        </select>
                     </div>
                     <div class="section-heading">
                         <div>
@@ -99,86 +162,47 @@
                                 </tr>
                             </thead>
                             <tbody id="applicationRows">
-                                <tr data-name="lia laptop asus vivobook 14" data-status="Menunggu">
-                                    <td>Lia</td>
-                                    <td>
-                                        <div class="item-cell">
-                                            <div class="item-picture"><i class="bi bi-laptop"></i></div>
-                                            <div><b>Laptop ASUS VivoBook 14</b><small>BRG-001 · Elektronik</small></div>
-                                        </div>
-                                    </td>
-                                    <td>17 Nov 2026</td>
-                                    <td>18 Nov 2026</td>
-                                    <td>21 Nov 2026</td>
-                                    <td>1</td>
-                                    <td><span class="status waiting">Menunggu</span></td>
-                                    <td><a class="btn-small" href="detail_peminjaman.php?id=1">Lihat Detail</a></td>
-                                </tr>
-                                <tr data-name="andi kamera canon eos 700d" data-status="Disetujui">
-                                    <td>Andi</td>
-                                    <td>
-                                        <div class="item-cell">
-                                            <div class="item-picture"><i class="bi bi-camera"></i></div>
-                                            <div><b>Kamera Canon EOS 700D</b><small>BRG-002 · Elektronik</small></div>
-                                        </div>
-                                    </td>
-                                    <td>16 Nov 2026</td>
-                                    <td>18 Nov 2026</td>
-                                    <td>20 Nov 2026</td>
-                                    <td>1</td>
-                                    <td><span class="status available">Disetujui</span></td>
-                                    <td><a class="btn-small" href="detail_peminjaman.php?id=2">Lihat Detail</a></td>
-                                </tr>
-                                <tr data-name="budi proyektor epson eb x400" data-status="Ditolak">
-                                    <td>Budi</td>
-                                    <td>
-                                        <div class="item-cell">
-                                            <div class="item-picture"><i class="bi bi-projector"></i></div>
-                                            <div><b>Proyektor Epson EB-X400</b><small>BRG-003 · Elektronik</small></div>
-                                        </div>
-                                    </td>
-                                    <td>15 Nov 2026</td>
-                                    <td>18 Nov 2026</td>
-                                    <td>21 Nov 2026</td>
-                                    <td>1</td>
-                                    <td><span class="status rejected">Ditolak</span></td>
-                                    <td><a class="btn-small" href="detail_peminjaman.php?id=3">Lihat Detail</a></td>
-                                </tr>
-                                <tr data-name="siti speaker portabel jbl" data-status="Sedang Dipinjam">
-                                    <td>Siti</td>
-                                    <td>
-                                        <div class="item-cell">
-                                            <div class="item-picture"><i class="bi bi-speaker"></i></div>
-                                            <div><b>Speaker portabel JBL</b><small>BRG-004 · Elektronik</small></div>
-                                        </div>
-                                    </td>
-                                    <td>14 Nov 2026</td>
-                                    <td>16 Nov 2026</td>
-                                    <td>19 Nov 2026</td>
-                                    <td>1</td>
-                                    <td><span class="status borrowed">Sedang Dipinjam</span></td>
-                                    <td><a class="btn-small" href="detail_peminjaman.php?id=4">Lihat Detail</a></td>
-                                </tr>
+                                <?php if (!$daftarPengajuan): ?>
+                                    <tr><td colspan="8" class="text-center py-4">Pengajuan tidak ditemukan.</td></tr>
+                                <?php else: ?>
+                                    <?php foreach ($daftarPengajuan as $pengajuan): ?>
+                                        <tr data-name="<?= esc(strtolower($pengajuan['nama_peminjam'] . ' ' . $pengajuan['nama_barang'])) ?>"
+                                            data-status="<?= esc(statusLabel($pengajuan['status_peminjaman'])) ?>">
+                                            <td><?= esc($pengajuan['nama_peminjam']) ?></td>
+                                            <td>
+                                                <div class="item-cell">
+                                                    <div class="item-picture"><i class="bi <?= esc(barangIcon($pengajuan['nama_barang'])) ?>"></i></div>
+                                                    <div><b><?= esc($pengajuan['nama_barang']) ?></b><small><?= esc($pengajuan['kode_barang']) ?> · <?= esc($pengajuan['kondisi_barang']) ?></small></div>
+                                                </div>
+                                            </td>
+                                            <td><?= esc(formatTanggalPendek($pengajuan['tanggal_pengajuan'])) ?></td>
+                                            <td><?= esc(formatTanggalPendek($pengajuan['tanggal_pinjam'])) ?></td>
+                                            <td><?= esc(formatTanggalPendek($pengajuan['tanggal_kembali'])) ?></td>
+                                            <td><?= (int) $pengajuan['jumlah_unit'] ?></td>
+                                            <td><span class="status <?= esc(statusClass($pengajuan['status_peminjaman'])) ?>"><?= esc(statusLabel($pengajuan['status_peminjaman'])) ?></span></td>
+                                            <td><a class="btn-small" href="<?= esc(adminUrl('detail_peminjaman.php', array_merge($kembaliDetailParams, ['id' => (int) $pengajuan['id_peminjaman'], 'page' => $halaman]))) ?>" data-remember-scroll>Lihat Detail</a></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
-                    <div class="table-footer">
-                        Menampilkan<b id="showApplications">4</b>dari 284 pengajuan
-                        <div class="pagination-lite">
-                            <button>‹</button><button class="current">1</button><button>2</button><button>3</button><span>...</span><button>71</button><button>›</button>
-                        </div>
-                    </div>
+                    <?php renderPagination((int) $totalPengajuan, $batas, $halaman, count($daftarPengajuan), 'pengajuan', static fn (int $nomor): string => $urlDengan(['page' => $nomor])); ?>
                 </section>
                 <section class="panel tab-panel" id="panelPengembalian" hidden="">
                     <div class="filter-grid return-filter">
-                        <div class="search-wrap">
-                            <i class="bi bi-search"></i><input class="search-field" id="searchReturn" type="search" placeholder="Cari nama peminjam atau barang...">
-                        </div>
-                        <div class="input-icon">
-                            <i class="bi bi-calendar3"></i>
-                            <input class="filter-field" type="text" placeholder="Semua tanggal pengembalian" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'">
-                        </div>
-                        <select class="filter-field"><option>Semua status pengembalian</option><option>Menunggu Konfirmasi</option><option>Selesai</option></select>
+                        <form method="get" class="search-form">
+                            <div class="search-wrap">
+                                <i class="bi bi-search"></i>
+                                <input class="search-field" id="searchReturn" name="return_search" type="search" value="<?= esc($returnCari) ?>" placeholder="Cari nama peminjam atau barang...">
+                            </div>
+                            <input type="hidden" name="tab" value="pengembalian">
+                            <?php foreach ($daftarParams as $kunci => $nilai): ?>
+                                <?php if (in_array($kunci, ['return_search', 'return_page', 'page', 'scroll', 'tab'], true)) continue; ?>
+                                <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+                            <?php endforeach; ?>
+                            <button type="submit" class="btn-small">Cari</button>
+                        </form>
                     </div>
                     <div class="section-heading">
                         <div>
@@ -199,87 +223,106 @@
                                 </tr>
                             </thead>
                             <tbody id="returnRows">
-                                <tr data-name="siti speaker portabel jbl">
-                                    <td>Siti</td>
-                                    <td>
-                                        <div class="item-cell">
-                                            <div class="item-picture"><i class="bi bi-speaker"></i></div>
-                                            <div><b>Speaker portabel JBL</b><small>BRG-004 · Jumlah: 1 unit</small></div>
-                                        </div>
-                                    </td>
-                                    <td>16 Nov 2026</td>
-                                    <td>19 Nov 2026</td>
-                                    <td><span class="status waiting">Menunggu Konfirmasi</span></td>
-                                    <td>
-                                        <button class="btn-primary-soft" onclick="openModal('returnModal','Siti Rahmawati','Speaker portabel JBL')">Konfirmasi Pengembalian</button>
-                                    </td>
-                                </tr>
-                                <tr data-name="roa tripod kamera">
-                                    <td>Roa</td>
-                                    <td>
-                                        <div class="item-cell">
-                                            <div class="item-picture"><i class="bi bi-camera-video"></i></div>
-                                            <div><b>Tripod kamera</b><small>BRG-005 · Jumlah: 1 unit</small></div>
-                                        </div>
-                                    </td>
-                                    <td>15 Nov 2026</td>
-                                    <td>18 Nov 2026</td>
-                                    <td><span class="status waiting">Menunggu Konfirmasi</span></td>
-                                    <td><button class="btn-primary-soft" onclick="openModal('returnModal','Roa','Tripod kamera')">Konfirmasi Pengembalian</button></td>
-                                </tr>
+                                <?php if (!$daftarPengembalian): ?>
+                                    <tr><td colspan="6" class="text-center py-4">Tidak ada pengembalian yang perlu dikonfirmasi.</td></tr>
+                                <?php else: ?>
+                                    <?php foreach ($daftarPengembalian as $pengembalian): ?>
+                                        <tr data-name="<?= esc(strtolower($pengembalian['nama_peminjam'] . ' ' . $pengembalian['nama_barang'])) ?>">
+                                            <td><?= esc($pengembalian['nama_peminjam']) ?></td>
+                                            <td>
+                                                <div class="item-cell">
+                                                    <div class="item-picture"><i class="bi <?= esc(barangIcon($pengembalian['nama_barang'])) ?>"></i></div>
+                                                    <div><b><?= esc($pengembalian['nama_barang']) ?></b><small><?= esc($pengembalian['kode_barang']) ?> · Jumlah: <?= (int) $pengembalian['jumlah_unit'] ?> unit</small></div>
+                                                </div>
+                                            </td>
+                                            <td><?= esc(formatTanggalPendek($pengembalian['tanggal_pinjam'])) ?></td>
+                                            <td><?= esc(formatTanggalPendek($pengembalian['tanggal_kembali'])) ?></td>
+                                            <td><span class="status waiting">Menunggu Konfirmasi</span></td>
+                                            <td>
+                                                <button type="button" class="btn-primary-soft" data-return-modal
+                                                    data-person="<?= esc($pengembalian['nama_peminjam']) ?>"
+                                                    data-item="<?= esc($pengembalian['nama_barang']) ?>"
+                                                    data-loan-id="<?= (int) $pengembalian['id_peminjaman'] ?>">Konfirmasi Pengembalian</button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
-                    <div class="table-footer">
-                        Menampilkan 2 pengembalian
-                        <div class="pagination-lite"><button class="current">1</button></div>
-                    </div>
+                    <?php renderPagination((int) $totalPengembalian, $batas, $halamanReturn, count($daftarPengembalian), 'pengembalian', static fn (int $nomor): string => $urlDengan(['return_page' => $nomor, 'tab' => 'pengembalian'])); ?>
                 </section>
             </div>
             <footer><span>© 2026 EBROW. Semua Hak Dilindungi.</span><span>Panel Administrator</span></footer>
         </main>
-        Popup konfirmasi pengembalian
+        <!-- Popup konfirmasi pengembalian -->
         <div class="modal-backdrop-custom" id="returnModal" aria-hidden="true">
             <div class="dialog-card">
                 <div class="dialog-icon gold"><i class="bi bi-box-arrow-in-left"></i></div>
                 <h2>Konfirmasi Pengembalian</h2>
                 <p class="dialog-person" id="returnPerson">Siti Rahmawati - Speaker portabel JBL</p>
                 <p class="dialog-description">Pastikan barang dan kelengkapannya sudah diterima dalam kondisi baik.</p>
-                <div class="dialog-info"><b>Status Peminjaman: Selesai</b><br>Stok siap dipinjam + 1 unit</div>
-                <div class="dialog-actions">
-                    <button class="btn-cancel" onclick="closeModal('returnModal')">Batal</button>
-                    <button class="btn-confirm gold-button" onclick="confirmReturn()">Konfirmasi</button>
-                </div>
+                <div class="dialog-info"><b>Status Peminjaman: Selesai</b><br>Stok siap dipinjam bertambah sesuai jumlah unit.</div>
+                <form method="post" id="returnForm">
+                    <input type="hidden" name="action" value="confirm_return">
+                    <input type="hidden" name="id" id="returnLoanId" value="">
+                    <input type="hidden" name="tab" value="pengembalian">
+                    <div class="dialog-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('returnModal')">Batal</button>
+                        <button type="submit" class="btn-confirm gold-button">Konfirmasi</button>
+                    </div>
+                </form>
             </div>
         </div>
         <script>
-                    const tabs = document.querySelectorAll('.page-tab');
-                    tabs.forEach(tab => tab.addEventListener('click', () => {
-                        tabs.forEach(item => item.classList.toggle('active', item === tab));
-                        document.getElementById('panelPengajuan').hidden = tab.dataset.tab !== 'pengajuan';
-                        document.getElementById('panelPengembalian').hidden = tab.dataset.tab !== 'pengembalian';
-                    }));
-                    function searchRows(inputId, rowsId) {
-                        const term = document.getElementById(inputId).value.toLowerCase();
-                        document.querySelectorAll('#' + rowsId + ' tr').forEach(row => row.hidden = !row.dataset.name.includes(term));
-                    }
-                    document.getElementById('searchPengajuan').addEventListener('input', () => searchRows('searchPengajuan', 'applicationRows'));
-                    document.getElementById('searchReturn').addEventListener('input', () => searchRows('searchReturn', 'returnRows'));
-                    document.querySelectorAll('.filter-chip').forEach(button => button.addEventListener('click', () => {
-                        document.querySelectorAll('.filter-chip').forEach(item => item.classList.toggle('active', item === button));
-                        document.querySelectorAll('#applicationRows tr').forEach(row => row.hidden = button.dataset.status !== 'Semua' && row.dataset.status !== button.dataset.status);
-                    }));
-                    function openModal(id, person, item) {
-                        document.getElementById('returnPerson').textContent = person + ' - ' + item;
-                        document.getElementById(id).classList.add('show');
-                    }
-                    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-                    function confirmReturn() {
-                        closeModal('returnModal');
-                        alert('Pengembalian berhasil dikonfirmasi. (Simulasi tampilan HTML)');
-                    }
-                    document.querySelectorAll('.modal-backdrop-custom').forEach(modal => modal.addEventListener('click', event => { if (event.target === modal) modal.classList.remove('show'); }));
-            
+            const tabs = document.querySelectorAll('.page-tab');
+            const panelPengajuan = document.getElementById('panelPengajuan');
+            const panelPengembalian = document.getElementById('panelPengembalian');
+
+            function aktifkanTab(nama, perbaruiUrl) {
+                tabs.forEach(item => item.classList.toggle('active', item.dataset.tab === nama));
+                panelPengajuan.hidden = nama !== 'pengajuan';
+                panelPengembalian.hidden = nama !== 'pengembalian';
+
+                if (perbaruiUrl) {
+                    const url = new URL(window.location.href);
+                    if (nama === 'pengembalian') url.searchParams.set('tab', 'pengembalian');
+                    else url.searchParams.delete('tab');
+                    history.replaceState(null, '', url.toString());
+                }
+            }
+
+            const tabAwal = new URLSearchParams(window.location.search).get('tab') === 'pengembalian' ? 'pengembalian' : 'pengajuan';
+            aktifkanTab(tabAwal, false);
+            tabs.forEach(tab => tab.addEventListener('click', () => aktifkanTab(tab.dataset.tab, true)));
+
+            function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+            document.querySelectorAll('[data-return-modal]').forEach(button => button.addEventListener('click', () => {
+                document.getElementById('returnPerson').textContent = button.dataset.person + ' - ' + button.dataset.item;
+                document.getElementById('returnLoanId').value = button.dataset.loanId;
+                document.getElementById('returnModal').classList.add('show');
+            }));
+            document.querySelectorAll('.modal-backdrop-custom').forEach(modal => modal.addEventListener('click', event => { if (event.target === modal) modal.classList.remove('show'); }));
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') document.querySelectorAll('.modal-backdrop-custom.show').forEach(modal => modal.classList.remove('show'));
+            });
+
+            document.querySelectorAll('[data-remember-scroll]').forEach(link => {
+                link.addEventListener('click', () => {
+                    const url = new URL(link.href, window.location.href);
+                    url.searchParams.set('scroll', String(Math.round(window.scrollY)));
+                    link.href = url.toString();
+                });
+            });
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('scroll')) {
+                const posisi = Math.max(0, parseInt(params.get('scroll'), 10) || 0);
+                window.requestAnimationFrame(() => window.scrollTo(0, posisi));
+                params.delete('scroll');
+                const sisa = params.toString();
+                history.replaceState(null, '', window.location.pathname + (sisa ? '?' + sisa : ''));
+            }
         </script>
     </body>
 </html>
