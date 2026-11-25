@@ -46,7 +46,7 @@
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
               <li><a class="dropdown-item py-2" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.html"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
             </ul>
           </li>
         </ul>
@@ -64,12 +64,6 @@
           <h1 class="h4 fw-bold text-dark mb-1">Selamat Datang di EBROW!</h1>
           <p class="small text-secondary mb-0">Kelola pengajuan peminjaman barang dan pantau jadwal pengembalianmu di satu tempat.</p>
         </div>
-        <div class="d-flex gap-2">
-          <a href="form-peminjaman.html" class="btn btn-ebrow px-4 py-2 fw-semibold">
-            <i class="bi bi-plus-lg me-1"></i> Pinjam Barang
-          </a>
-        </div>
-      </div>
 
       <!-- Kartu Statistik Ringkas -->
       <div class="row g-3 mt-3">
