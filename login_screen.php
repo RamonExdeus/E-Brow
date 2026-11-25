@@ -44,13 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($cek->num_rows > 0) {
                 $error_msg = 'Email sudah terdaftar. Silakan gunakan email lain atau login.';
             } else {
-                $password_hash = password_hash($password, PASSWORD_DEFAULT);
                 $role = 'user';
-
                 $stmt = $conn->prepare(
-                    'INSERT INTO users (nama_lengkap, email, no_telepon, password_hash, role) VALUES (?, ?, ?, ?, ?)'
+                'INSERT INTO users (nama_lengkap, email, no_telepon, password_hash, role) VALUES (?, ?, ?, ?, ?)'
                 );
-                $stmt->bind_param('sssss', $nama_lengkap, $email, $no_telepon, $password_hash, $role);
+                $stmt->bind_param('sssss', $nama_lengkap, $email, $no_telepon, $password, $role);
 
                 if ($stmt->execute()) {
                     $new_user_id = $stmt->insert_id;
