@@ -13,8 +13,8 @@ function getDBConnection() {
     // Kredensial dapat ditimpa lewat environment variable.
     $host = getenv('EBROW_DB_HOST') ?: '127.0.0.1';
     $db   = getenv('EBROW_DB_NAME') ?: 'ebrow';
-    $user = getenv('EBROW_DB_USER') ?: 'ffata';
-    $pass = getenv('EBROW_DB_PASS') ?: 'kora';
+    $user = getenv('EBROW_DB_USER') ?: 'root';
+    $pass = getenv('EBROW_DB_PASS') ?: '';
 
     try {
         $conn = new mysqli($host, $user, $pass, $db);
