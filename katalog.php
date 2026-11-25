@@ -27,16 +27,16 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
         <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
           <li class="nav-item">
-            <a class="nav-link" href="dashboard_user.php">Dashboard</a>
+            <a class="nav-link" href="user/dashboard_user.php">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="katalog.php">Katalog Barang</a>
+            <a class="nav-link" href="user/katalog.php">Katalog Barang</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a>
+            <a class="nav-link" href="user/status_peminjaman.php">Status Peminjaman</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="riwayat_peminjaman.php">Riwayat</a>
+            <a class="nav-link" href="user/riwayat_peminjaman.php">Riwayat</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle active fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">

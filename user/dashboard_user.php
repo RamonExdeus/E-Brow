@@ -65,7 +65,7 @@
           <p class="small text-secondary mb-0">Kelola pengajuan peminjaman barang dan pantau jadwal pengembalianmu di satu tempat.</p>
         </div>
         <div class="d-flex gap-2">
-          <a href="../katalog.php" class="btn btn-ebrow px-4 py-2 fw-semibold">
+          <a href="form-peminjaman.html" class="btn btn-ebrow px-4 py-2 fw-semibold">
             <i class="bi bi-plus-lg me-1"></i> Pinjam Barang
           </a>
         </div>

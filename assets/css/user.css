@@ -152,3 +152,44 @@ body {
   font-size: 2.8rem;
   color: var(--ebrow-dark) !important;
 }
+
+.borrow-helper-text {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.borrow-checkbox:checked,
+.ebrow-checkbox:checked {
+  background-color: var(--ebrow-gold);
+  border-color: var(--ebrow-gold);
+}
+
+.ebrow-checkbox:focus {
+  border-color: var(--ebrow-gold);
+  box-shadow: 0 0 0 0.2rem rgba(213, 172, 50, 0.22);
+}
+
+/* Panel Ringkasan Kanan */
+.borrow-summary-sticky {
+  position: sticky;
+  top: 5.5rem;
+}
+
+/* Kotak Preview Barang (Selaras dengan kartu kuning di Katalog) */
+.borrow-preview-box {
+  background-color: #fff380;
+  border: 1px solid #f0e165;
+}
+
+.borrow-preview-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  background-color: #ffffff;
+  padding: 0.35rem;
+  border: 1px solid rgba(36, 31, 20, 0.1);
+}
+
+.borrow-total-price {
+  color: #9c7611;
+}
