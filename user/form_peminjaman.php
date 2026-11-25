@@ -12,122 +12,106 @@ if ($conn->connect_error) {
 }
 $conn->set_charset('utf8mb4');
 
-function pickColumn(array $cols, array $candidates): ?string
-{
-    foreach ($candidates as $cand) {
-        if (in_array($cand, $cols, true)) {
-            return $cand;
-        }
-    }
-    return null;
-}
-
 $berhasil = false;
 $error_msg = '';
 $kode_transaksi = '#BRW-' . rand(100, 999);
-$info_sukses = [
-    'item' => '-',
-    'total' => '-',
-    'kode' => $kode_transaksi,
-];
+$info_sukses = ['item' => '-', 'total' => '-', 'kode' => $kode_transaksi];
 
-$cols = [];
-$resCols = $conn->query("SHOW COLUMNS FROM `peminjaman`");
-if ($resCols) {
-    while ($c = $resCols->fetch_assoc()) {
-        $cols[] = $c['Field'];
+// Ambil barang yang didaftarkan admin di tabel `barang`
+$items = [];
+$sqlBarang = "SELECT b.*, k.nama_kategori
+              FROM `barang` b
+              LEFT JOIN `kategori_barang` k ON b.id_kategori = k.id_kategori
+              ORDER BY b.id_barang ASC";
+$resBarang = $conn->query($sqlBarang);
+if ($resBarang) {
+    while ($row = $resBarang->fetch_assoc()) {
+        $img = !empty($row['foto_barang']) ? $row['foto_barang'] : '../assets/images/laptop.jpeg';
+        if (!str_starts_with($img, '../') && !str_starts_with($img, 'http')) {
+            $img = '../' . ltrim($img, '/');
+        }
+        $items[] = [
+            'id' => (int) $row['id_barang'],
+            'name' => (string) $row['nama_barang'],
+            'category' => (string) ($row['nama_kategori'] ?? 'Barang'),
+            'price' => (int) ($row['harga_per_hari'] ?? 0),
+            'stock' => max(0, (int) ($row['stok_tersedia'] ?? 0)),
+            'img' => $img,
+        ];
     }
-    $resCols->free();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_user       = (int) ($_SESSION['id_user'] ?? 1);
-    $id_barang     = (int) ($_POST['id_barang'] ?? 1);
-    $nama_peminjam = trim($_POST['borrow_name'] ?? '');
-    $nim_anggota   = trim($_POST['borrow_nim'] ?? '');
-    $no_telepon    = trim($_POST['borrow_phone'] ?? '');
-    $prodi_org     = trim($_POST['borrow_unit'] ?? '');
-    $jumlah_unit   = max(1, (int) ($_POST['borrow_qty'] ?? 1));
-    $tgl_mulai     = $_POST['borrow_start'] ?? date('Y-m-d');
-    $tgl_selesai   = $_POST['borrow_end'] ?? date('Y-m-d', strtotime('+1 day'));
-    $waktu_ambil   = trim($_POST['borrow_time'] ?? '09:00 WIB');
-    $keperluan     = trim($_POST['borrow_purpose'] ?? '');
-    $nama_barang   = trim($_POST['item_name'] ?? 'Barang');
-    $harga_harian  = max(0, (int) ($_POST['item_price'] ?? 0));
+    $id_user     = (int) ($_SESSION['id_user'] ?? 1);
+    $id_barang   = (int) ($_POST['id_barang'] ?? 0);
+    $nama        = trim($_POST['borrow_name'] ?? '');
+    $nim         = trim($_POST['borrow_nim'] ?? '');
+    $no_wa       = trim($_POST['borrow_phone'] ?? '');
+    $prodi_org   = trim($_POST['borrow_unit'] ?? '');
+    $jumlah      = max(1, (int) ($_POST['borrow_qty'] ?? 1));
+    $tgl_mulai   = $_POST['borrow_start'] ?? date('Y-m-d');
+    $tgl_selesai = $_POST['borrow_end'] ?? date('Y-m-d', strtotime('+1 day'));
+    $waktu_ambil = trim($_POST['borrow_time'] ?? '09:00 WIB');
+    $keperluan   = trim($_POST['borrow_purpose'] ?? '');
 
-    $d1 = new DateTime($tgl_mulai);
-    $d2 = new DateTime($tgl_selesai);
-    $durasi = (int) $d1->diff($d2)->format('%r%a');
-    $durasi = $durasi >= 1 ? $durasi : 1;
-    $total_biaya = $harga_harian * $jumlah_unit * $durasi;
-
-    $lampiran_path = null;
-    if (!empty($_FILES['borrow_doc']['name']) && $_FILES['borrow_doc']['error'] === UPLOAD_ERR_OK) {
-        $ext = strtolower(pathinfo($_FILES['borrow_doc']['name'], PATHINFO_EXTENSION));
-        if (in_array($ext, ['pdf', 'jpg', 'jpeg', 'png'], true) && $_FILES['borrow_doc']['size'] <= 2 * 1024 * 1024) {
-            $dir = __DIR__ . '/../uploads/peminjaman';
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
-            }
-            $fileName = 'doc_' . time() . '_' . rand(100, 999) . '.' . $ext;
-            if (move_uploaded_file($_FILES['borrow_doc']['tmp_name'], $dir . '/' . $fileName)) {
-                $lampiran_path = 'uploads/peminjaman/' . $fileName;
-            }
+    $barangDipilih = null;
+    foreach ($items as $it) {
+        if ($it['id'] === $id_barang) {
+            $barangDipilih = $it;
+            break;
         }
     }
 
-    $mapping = [
-        [pickColumn($cols, ['kode_peminjaman', 'nomor_peminjaman', 'kode_transaksi']), 's', $kode_transaksi],
-        [pickColumn($cols, ['id_user', 'user_id']), 'i', $id_user],
-        [pickColumn($cols, ['id_barang', 'barang_id']), 'i', $id_barang],
-        [pickColumn($cols, ['nama_peminjam', 'nama_lengkap', 'nama']), 's', $nama_peminjam],
-        [pickColumn($cols, ['nim_anggota', 'nim']), 's', $nim_anggota],
-        [pickColumn($cols, ['no_telepon', 'no_wa', 'telepon']), 's', $no_telepon],
-        [pickColumn($cols, ['prodi_organisasi', 'unit_organisasi', 'prodi']), 's', $prodi_org],
-        [pickColumn($cols, ['jumlah_unit', 'jumlah', 'qty']), 'i', $jumlah_unit],
-        [pickColumn($cols, ['tanggal_mulai', 'tanggal_pinjam', 'tgl_pinjam']), 's', $tgl_mulai],
-        [pickColumn($cols, ['tanggal_selesai', 'tanggal_kembali', 'tgl_kembali']), 's', $tgl_selesai],
-        [pickColumn($cols, ['waktu_pengambilan', 'jam_ambil', 'waktu_ambil']), 's', $waktu_ambil],
-        [pickColumn($cols, ['keperluan', 'keperluan_peminjaman', 'keterangan']), 's', $keperluan],
-        [pickColumn($cols, ['lampiran', 'lampiran_surat', 'file_lampiran']), 's', $lampiran_path],
-        [pickColumn($cols, ['total_biaya', 'estimasi_total', 'total_bayar']), 'i', $total_biaya],
-        [pickColumn($cols, ['status_peminjaman', 'status']), 's', 'Menunggu Persetujuan'],
-    ];
-
-    $insertCols = [];
-    $placeholders = [];
-    $types = '';
-    $params = [];
-
-    foreach ($mapping as [$colName, $type, $val]) {
-        if ($colName !== null && $val !== null) {
-            $insertCols[] = "`{$colName}`";
-            $placeholders[] = '?';
-            $types .= $type;
-            $params[] = $val;
-        }
-    }
-
-    if (empty($insertCols)) {
-        $error_msg = 'Struktur kolom tabel `peminjaman` tidak cocok.';
+    if (!$barangDipilih) {
+        $error_msg = 'Barang tidak ditemukan.';
+    } elseif ($jumlah > $barangDipilih['stock']) {
+        $error_msg = 'Jumlah melebihi stok tersedia.';
     } else {
-        $sql = 'INSERT INTO `peminjaman` (' . implode(', ', $insertCols) . ') VALUES (' . implode(', ', $placeholders) . ')';
-        $stmt = $conn->prepare($sql);
-        if ($stmt) {
-            $stmt->bind_param($types, ...$params);
-            if ($stmt->execute()) {
-                $berhasil = true;
-                $info_sukses['item'] = $nama_barang . ' (' . $jumlah_unit . ' Unit)';
-                $info_sukses['total'] = 'Rp' . number_format($total_biaya, 0, ',', '.');
-            } else {
-                $error_msg = 'Gagal menyimpan data: ' . $stmt->error;
+        $hari = max(1, (int) (new DateTime($tgl_mulai))->diff(new DateTime($tgl_selesai))->format('%r%a'));
+        $total = $barangDipilih['price'] * $jumlah * $hari;
+
+        $lampiran = null;
+        if (!empty($_FILES['borrow_doc']['name']) && $_FILES['borrow_doc']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['borrow_doc']['name'], PATHINFO_EXTENSION));
+            if (in_array($ext, ['pdf', 'jpg', 'jpeg', 'png'], true) && $_FILES['borrow_doc']['size'] <= 2 * 1024 * 1024) {
+                $dir = __DIR__ . '/../uploads/peminjaman';
+                if (!is_dir($dir)) mkdir($dir, 0777, true);
+                $namaFile = 'doc_' . time() . '_' . rand(100, 999) . '.' . $ext;
+                if (move_uploaded_file($_FILES['borrow_doc']['tmp_name'], $dir . '/' . $namaFile)) {
+                    $lampiran = 'uploads/peminjaman/' . $namaFile;
+                }
             }
-            $stmt->close();
-        } else {
-            $error_msg = 'Query gagal disiapkan: ' . $conn->error;
         }
+
+        $stmt = $conn->prepare("
+            INSERT INTO `peminjaman` (
+                kode_peminjaman, id_user, id_barang, nama_peminjam, nim_anggota,
+                no_telepon, prodi_organisasi, jumlah_unit, tanggal_mulai, tanggal_selesai,
+                waktu_pengambilan, keperluan, lampiran, total_biaya, status_peminjaman
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Persetujuan')
+        ");
+        $stmt->bind_param(
+            'siissssisssssi',
+            $kode_transaksi, $id_user, $id_barang, $nama, $nim,
+            $no_wa, $prodi_org, $jumlah, $tgl_mulai, $tgl_selesai,
+            $waktu_ambil, $keperluan, $lampiran, $total
+        );
+
+        if ($stmt->execute()) {
+            $berhasil = true;
+            $info_sukses['item'] = $barangDipilih['name'] . " ({$jumlah} Unit)";
+            $info_sukses['total'] = 'Rp' . number_format($total, 0, ',', '.');
+        } else {
+            $error_msg = 'Gagal menyimpan: ' . $stmt->error;
+        }
+        $stmt->close();
     }
 }
+
+$firstItem = $items[0] ?? [
+    'id' => 0, 'name' => 'Belum ada barang', 'category' => '-',
+    'price' => 0, 'stock' => 0, 'img' => '../assets/images/laptop.jpeg',
+];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -147,11 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <i class="bi bi-box fs-5"></i>
         <span>EBROW</span>
       </a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser" aria-controls="navbarUser" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
         <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
           <li class="nav-item"><a class="nav-link" href="dashboard_user.php">Dashboard</a></li>
@@ -159,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <li class="nav-item"><a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a></li>
           <li class="nav-item"><a class="nav-link" href="riwayat_peminjaman.php">Riwayat</a></li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle fs-5"></i>
               <span>Akun Saya</span>
             </a>
@@ -179,13 +161,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <ol class="breadcrumb small mb-0">
         <li class="breadcrumb-item"><a href="dashboard_user.php" class="ebrow-link text-decoration-none">Dashboard</a></li>
         <li class="breadcrumb-item"><a href="../katalog.php" class="ebrow-link text-decoration-none">Katalog Barang</a></li>
-        <li class="breadcrumb-item active text-secondary" aria-current="page">Form Peminjaman</li>
+        <li class="breadcrumb-item active text-secondary">Form Peminjaman</li>
       </ol>
     </nav>
 
     <?php if ($error_msg !== ''): ?>
       <div class="alert alert-danger rounded-3 small mb-4">
         <i class="bi bi-exclamation-triangle-fill me-2"></i><?= htmlspecialchars($error_msg) ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if (empty($items)): ?>
+      <div class="alert alert-warning rounded-3 small mb-4">
+        <i class="bi bi-info-circle-fill me-2"></i>Belum ada barang yang didaftarkan admin.
       </div>
     <?php endif; ?>
 
@@ -199,9 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <form id="borrowForm" method="POST" action="" enctype="multipart/form-data">
-            <input type="hidden" name="id_barang" id="hidden-id-barang" value="1" />
-            <input type="hidden" name="item_name" id="hidden-item-name" value="Laptop" />
-            <input type="hidden" name="item_price" id="hidden-item-price" value="30000" />
+            <input type="hidden" name="id_barang" id="hidden-id-barang" value="<?= $firstItem['id'] ?>" />
 
             <div class="mb-4">
               <h2 class="h6 fw-bold text-dark border-bottom pb-2 mb-3">
@@ -210,19 +196,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="row g-3">
                 <div class="col-md-6">
                   <label for="borrow-name" class="form-label small fw-semibold">Nama Lengkap</label>
-                  <input type="text" class="form-control ebrow-input" id="borrow-name" name="borrow_name" value="" required />
+                  <input type="text" class="form-control ebrow-input" id="borrow-name" name="borrow_name" required />
                 </div>
                 <div class="col-md-6">
                   <label for="borrow-nim" class="form-label small fw-semibold">NIM / ID Anggota</label>
-                  <input type="text" class="form-control ebrow-input" id="borrow-nim" name="borrow_nim" value="" required />
+                  <input type="text" class="form-control ebrow-input" id="borrow-nim" name="borrow_nim" required />
                 </div>
                 <div class="col-md-6">
                   <label for="borrow-phone" class="form-label small fw-semibold">Nomor WhatsApp Aktif</label>
-                  <input type="tel" class="form-control ebrow-input" id="borrow-phone" name="borrow_phone" value="" placeholder="08xxxxxxxxxx" required />
+                  <input type="tel" class="form-control ebrow-input" id="borrow-phone" name="borrow_phone" placeholder="08xxxxxxxxxx" required />
                 </div>
                 <div class="col-md-6">
                   <label for="borrow-unit" class="form-label small fw-semibold">Program Studi / Organisasi</label>
-                  <input type="text" class="form-control ebrow-input" id="borrow-unit" name="borrow_unit" value="" required />
+                  <input type="text" class="form-control ebrow-input" id="borrow-unit" name="borrow_unit" required />
                 </div>
               </div>
             </div>
@@ -234,38 +220,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="row g-3">
                 <div class="col-md-8">
                   <label for="borrow-item" class="form-label small fw-semibold">Pilih Barang</label>
-                  <select class="form-select ebrow-input" id="borrow-item" name="borrow_item" onchange="updateSummary()" required>
-                    <option value="laptop" data-id="1" data-name="Laptop" data-category="Elektronik" data-price="30000" data-stock="5" data-img="../assets/images/laptop.jpeg">
-                      Laptop Asus VivoBook (Rp30.000 / hari • Stok: 5)
-                    </option>
-                    <option value="kamera" data-id="2" data-name="Kamera DSLR Canon" data-category="Elektronik" data-price="20000" data-stock="3" data-img="../assets/images/kamera.jpeg">
-                      Kamera DSLR Canon (Rp20.000 / hari • Stok: 3)
-                    </option>
-                    <option value="speaker" data-id="3" data-name="Speaker Portable Aktif" data-category="Elektronik" data-price="15000" data-stock="4" data-img="../assets/images/speaker.jpeg">
-                      Speaker Portable Aktif (Rp15.000 / hari • Stok: 4)
-                    </option>
-                    <option value="mic" data-id="4" data-name="Microphone Wireless" data-category="Elektronik" data-price="15000" data-stock="6" data-img="../assets/images/mic.jpeg">
-                      Microphone Wireless (Rp15.000 / hari • Stok: 6)
-                    </option>
-                    <option value="proyektor" data-id="5" data-name="Proyektor Epson EB-X500" data-category="Presentasi" data-price="25000" data-stock="3" data-img="../assets/images/proyektor.jpeg">
-                      Proyektor Epson EB-X500 (Rp25.000 / hari • Stok: 3)
-                    </option>
-                    <option value="tripod" data-id="6" data-name="Tripod Takara Heavy Duty" data-category="Dokumentasi" data-price="10000" data-stock="4" data-img="../assets/images/tripod.jpeg">
-                      Tripod Takara Heavy Duty (Rp10.000 / hari • Stok: 4)
-                    </option>
-                    <option value="meja" data-id="7" data-name="Meja Lipat Portable" data-category="Perlengkapan Acara" data-price="10000" data-stock="10" data-img="../assets/images/meja.jpeg">
-                      Meja Lipat Portable (Rp10.000 / hari • Stok: 10)
-                    </option>
-                    <option value="kursi" data-id="8" data-name="Kursi Lipat Acara" data-category="Perlengkapan Acara" data-price="5000" data-stock="25" data-img="../assets/images/kursi.jpeg">
-                      Kursi Lipat Acara (Rp5.000 / hari • Stok: 25)
-                    </option>
+                  <select class="form-select ebrow-input" id="borrow-item" onchange="updateSummary()" <?= empty($items) ? 'disabled' : 'required' ?>>
+                    <?php if (empty($items)): ?>
+                      <option value="">Belum ada barang terdaftar</option>
+                    <?php else: ?>
+                      <?php foreach ($items as $it): ?>
+                        <option
+                          value="<?= $it['id'] ?>"
+                          data-id="<?= $it['id'] ?>"
+                          data-name="<?= htmlspecialchars($it['name']) ?>"
+                          data-category="<?= htmlspecialchars($it['category']) ?>"
+                          data-price="<?= $it['price'] ?>"
+                          data-stock="<?= $it['stock'] ?>"
+                          data-img="<?= htmlspecialchars($it['img']) ?>"
+                        >
+                          <?= htmlspecialchars($it['name'] . ' (Rp' . number_format($it['price'], 0, ',', '.') . ' / hari • Stok: ' . $it['stock'] . ')') ?>
+                        </option>
+                      <?php endforeach; ?>
+                    <?php endif; ?>
                   </select>
                 </div>
 
                 <div class="col-md-4">
                   <label for="borrow-qty" class="form-label small fw-semibold">Jumlah Unit</label>
-                  <input type="number" class="form-control ebrow-input" id="borrow-qty" name="borrow_qty" value="1" min="1" max="5" onchange="updateSummary()" oninput="updateSummary()" required />
-                  <div class="form-text borrow-helper-text" id="stock-hint">Maksimal 5 unit tersedia.</div>
+                  <input type="number" class="form-control ebrow-input" id="borrow-qty" name="borrow_qty" value="1" min="1" max="<?= max(1, $firstItem['stock']) ?>" onchange="updateSummary()" oninput="updateSummary()" <?= empty($items) ? 'disabled' : 'required' ?> />
+                  <div class="form-text borrow-helper-text" id="stock-hint">Maksimal <?= $firstItem['stock'] ?> unit tersedia.</div>
                 </div>
 
                 <div class="col-md-4">
@@ -305,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="ebrow-info-box rounded-3 p-3 mb-4">
               <div class="form-check small mb-0">
-                <input class="form-check-input ebrow-checkbox" type="checkbox" id="agree-terms" name="agree_terms" required />
+                <input class="form-check-input ebrow-checkbox" type="checkbox" id="agree-terms" required />
                 <label class="form-check-label text-secondary" for="agree-terms">
                   Saya menyatakan data di atas benar dan bersedia menjaga kondisi barang serta mengembalikannya tepat waktu sesuai jadwal yang ditentukan.
                 </label>
@@ -314,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
               <a href="../katalog.php" class="btn btn-outline-secondary px-4 py-2 fw-semibold">Batal</a>
-              <button type="submit" class="btn btn-ebrow px-4 py-2 fw-semibold">
+              <button type="submit" class="btn btn-ebrow px-4 py-2 fw-semibold" <?= empty($items) ? 'disabled' : '' ?>>
                 <i class="bi bi-send me-1"></i> Ajukan Peminjaman
               </button>
             </div>
@@ -327,10 +306,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <h2 class="h6 fw-bold text-dark mb-3">Ringkasan Peminjaman</h2>
 
           <div class="borrow-preview-box rounded-4 p-3 text-center mb-3">
-            <img src="../assets/images/laptop.jpeg" alt="Preview Barang" id="summary-img" class="rounded-3 borrow-preview-img mb-2" />
-            <span class="badge bg-white text-dark border rounded-pill px-3 py-1 small mb-1" id="summary-category">Elektronik</span>
-            <h3 class="h6 fw-bold text-dark mb-0" id="summary-name">Laptop</h3>
-            <div class="small text-secondary mt-1" id="summary-rate">Rp30.000 / hari</div>
+            <img src="<?= htmlspecialchars($firstItem['img']) ?>" alt="Preview Barang" id="summary-img" class="rounded-3 borrow-preview-img mb-2" />
+            <span class="badge bg-white text-dark border rounded-pill px-3 py-1 small mb-1" id="summary-category"><?= htmlspecialchars($firstItem['category']) ?></span>
+            <h3 class="h6 fw-bold text-dark mb-0" id="summary-name"><?= htmlspecialchars($firstItem['name']) ?></h3>
+            <div class="small text-secondary mt-1" id="summary-rate">Rp<?= number_format($firstItem['price'], 0, ',', '.') ?> / hari</div>
           </div>
 
           <div class="small">
@@ -348,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="d-flex justify-content-between align-items-center pt-3">
               <span class="fw-bold text-dark">Estimasi Total</span>
-              <span class="h5 fw-bold mb-0 borrow-total-price" id="summary-total">Rp30.000</span>
+              <span class="h5 fw-bold mb-0 borrow-total-price" id="summary-total">Rp<?= number_format($firstItem['price'], 0, ',', '.') ?></span>
             </div>
           </div>
 
@@ -398,38 +377,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function formatRupiah(angka) {
-      return 'Rp' + angka.toLocaleString('id-ID');
-    }
+    const fmt = n => 'Rp' + n.toLocaleString('id-ID');
 
     document.addEventListener('DOMContentLoaded', () => {
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
+      const tStr = today.toISOString().split('T')[0];
+      const nStr = tomorrow.toISOString().split('T')[0];
 
-      const startInput = document.getElementById('borrow-start');
-      const endInput = document.getElementById('borrow-end');
+      const s = document.getElementById('borrow-start');
+      const e = document.getElementById('borrow-end');
+      s.min = tStr; s.value = tStr;
+      e.min = tStr; e.value = nStr;
 
-      const todayStr = today.toISOString().split('T')[0];
-      const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-      startInput.min = todayStr;
-      startInput.value = todayStr;
-      endInput.min = todayStr;
-      endInput.value = tomorrowStr;
-
-      const params = new URLSearchParams(window.location.search);
-      const barangParam = params.get('barang');
+      const barangParam = new URLSearchParams(location.search).get('barang');
       if (barangParam) {
-        const selectEl = document.getElementById('borrow-item');
-        for (let opt of selectEl.options) {
-          if (opt.value === barangParam.toLowerCase()) {
-            selectEl.value = opt.value;
+        const sel = document.getElementById('borrow-item');
+        for (const opt of sel.options) {
+          if (opt.textContent.toLowerCase().includes(barangParam.toLowerCase())) {
+            sel.value = opt.value;
             break;
           }
         }
       }
-
       updateSummary();
 
       <?php if ($berhasil): ?>
@@ -438,46 +409,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
 
     function updateSummary() {
-      const selectEl = document.getElementById('borrow-item');
-      const selectedOpt = selectEl.options[selectEl.selectedIndex];
+      const sel = document.getElementById('borrow-item');
+      if (!sel || sel.disabled || !sel.options.length) return;
+      const opt = sel.options[sel.selectedIndex];
 
-      const itemId = selectedOpt.getAttribute('data-id');
-      const itemName = selectedOpt.getAttribute('data-name');
-      const itemCategory = selectedOpt.getAttribute('data-category');
-      const itemPrice = parseInt(selectedOpt.getAttribute('data-price'), 10);
-      const itemStock = parseInt(selectedOpt.getAttribute('data-stock'), 10);
-      const itemImg = selectedOpt.getAttribute('data-img');
+      const price = parseInt(opt.dataset.price, 10) || 0;
+      const stock = Math.max(1, parseInt(opt.dataset.stock, 10) || 1);
+      document.getElementById('hidden-id-barang').value = opt.dataset.id;
 
-      document.getElementById('hidden-id-barang').value = itemId;
-      document.getElementById('hidden-item-name').value = itemName;
-      document.getElementById('hidden-item-price').value = itemPrice;
+      const qtyEl = document.getElementById('borrow-qty');
+      qtyEl.max = stock;
+      let qty = parseInt(qtyEl.value, 10) || 1;
+      if (qty > stock) qty = stock;
+      if (qty < 1) qty = 1;
+      qtyEl.value = qty;
+      document.getElementById('stock-hint').textContent = `Maksimal ${stock} unit tersedia.`;
 
-      const qtyInput = document.getElementById('borrow-qty');
-      qtyInput.max = itemStock;
-      if (parseInt(qtyInput.value, 10) > itemStock) qtyInput.value = itemStock;
-      if (parseInt(qtyInput.value, 10) < 1 || isNaN(parseInt(qtyInput.value, 10))) qtyInput.value = 1;
-      const qty = parseInt(qtyInput.value, 10);
-      document.getElementById('stock-hint').textContent = `Maksimal ${itemStock} unit tersedia.`;
-
-      const startInput = document.getElementById('borrow-start');
-      const endInput = document.getElementById('borrow-end');
-      endInput.min = startInput.value;
+      const s = document.getElementById('borrow-start');
+      const e = document.getElementById('borrow-end');
+      e.min = s.value;
 
       let days = 1;
-      if (startInput.value && endInput.value) {
-        const diffDays = Math.ceil((new Date(endInput.value) - new Date(startInput.value)) / (1000 * 60 * 60 * 24));
-        days = diffDays >= 1 ? diffDays : 1;
+      if (s.value && e.value) {
+        days = Math.max(1, Math.ceil((new Date(e.value) - new Date(s.value)) / 86400000));
       }
 
-      const totalCost = itemPrice * qty * days;
-
-      document.getElementById('summary-img').src = itemImg;
-      document.getElementById('summary-category').textContent = itemCategory;
-      document.getElementById('summary-name').textContent = itemName;
-      document.getElementById('summary-rate').textContent = `${formatRupiah(itemPrice)} / hari`;
+      document.getElementById('summary-img').src = opt.dataset.img;
+      document.getElementById('summary-category').textContent = opt.dataset.category;
+      document.getElementById('summary-name').textContent = opt.dataset.name;
+      document.getElementById('summary-rate').textContent = `${fmt(price)} / hari`;
       document.getElementById('summary-qty').textContent = `${qty} Unit`;
       document.getElementById('summary-duration').textContent = `${days} Hari`;
-      document.getElementById('summary-total').textContent = formatRupiah(totalCost);
+      document.getElementById('summary-total').textContent = fmt(price * qty * days);
     }
   </script>
 </body>
