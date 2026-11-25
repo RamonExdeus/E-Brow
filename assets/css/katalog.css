@@ -1,7 +1,6 @@
-
 /* =================================
    1. PENGATURAN DASAR
-================================= */
+=================================== */
 
 body {
   background-color: #fbf5e6;
@@ -15,7 +14,11 @@ body {
 
 .ebrow-navbar {
   background-color: #d5ac32;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
 }
 
 .ebrow-navbar .navbar-brand {
@@ -128,7 +131,9 @@ body {
   background-color: #fffdf8;
   border: 1px solid #eadbbd;
   border-radius: 12px;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .daftar-barang .card:hover {
