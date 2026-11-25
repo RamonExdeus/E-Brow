@@ -16,7 +16,7 @@
   <!-- Navbar Pengguna -->
   <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
     <div class="container-fluid px-0">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.html">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.php">
         <i class="bi bi-box fs-5"></i>
         <span>EBROW</span>
       </a>
@@ -28,16 +28,16 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
         <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
           <li class="nav-item">
-            <a class="nav-link" href="dashboard_user.html">Dashboard</a>
+            <a class="nav-link" href="dashboard_user.php">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../katalog.html">Katalog Barang</a>
+            <a class="nav-link" href="../katalog.php">Katalog Barang</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="status_peminjaman.html">Status Peminjaman</a>
+            <a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="riwayat_peminjaman.html">Riwayat</a>
+            <a class="nav-link" href="riwayat_peminjaman.php">Riwayat</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle active fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
@@ -45,9 +45,9 @@
               <span>Akun Saya</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-              <li><a class="dropdown-item py-2 active" href="profil_user.html"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
+              <li><a class="dropdown-item py-2 active" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.html"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
             </ul>
           </li>
         </ul>

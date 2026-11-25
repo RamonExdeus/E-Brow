@@ -28,8 +28,8 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-md-center gap-md-4 mt-3 mt-md-0">
           <li class="nav-item">
-            <button type="button" class="btn btn-ebrow-nav btn-sm px-3 py-2 fw-semibold" onclick="switchTab('login')">
-              Login / Register
+            <button type="button" class="btn btn-ebrow-nav btn-sm px-3 py-2 fw-semibold" onclick="window.location.href='index.php'">
+            Kembali
             </button>
           </li>
         </ul>

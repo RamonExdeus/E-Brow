@@ -14,56 +14,45 @@
     <link rel="stylesheet" href="assets/css/katalog.css" />
   </head>
   <body>
-    <!--   NAVBAR    -->
-    <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
-      <div class="container">
-        <!-- Logo EBROW -->
-        <a class="navbar-brand fw-bold" href="index.html"> <i class="bi bi-box"></i> EBR<span>O</span>W </a>
+    <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
+    <div class="container-fluid px-0">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.php">
+        <i class="bi bi-box fs-5"></i>
+        <span>EBROW</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <!-- Tombol menu untuk tampilan HP -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Daftar menu navigasi -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html"> <i class="bi bi-house-door-fill"></i> Beranda </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="index.html#faq"> <i class="bi bi-question-circle-fill"></i>FAQ </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="index.html#kontak"> <i class="bi bi-envelope-fill"></i> Kontak </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="katalog.html"> <i class="bi bi-grid-fill"></i> Katalog </a>
-            </li>
-            <!-- Menu akun untuk masuk dan daftar -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-inline-flex align-items-center gap-1 account-trigger" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu Akun">
-                <i class="bi bi-person-circle"></i>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="accountDropdown">
-                <li>
-                  <a class="dropdown-item py-2" href="login_screen.html">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                    Masuk
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item py-2" href="login_screen.html?tab=register">
-                    <i class="bi bi-person-plus me-2"></i>
-                    Daftar
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
+        <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
+          <li class="nav-item">
+            <a class="nav-link" href="dashboard_user.php">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="katalog.php">Katalog Barang</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="riwayat_peminjaman.php">Riwayat</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle fs-5"></i>
+              <span>Akun Saya</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+              <li><a class="dropdown-item py-2 active" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+            </ul>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
 
     <!--   JUDUL KATALOG    -->
     <section class="katalog py-5">
@@ -106,7 +95,7 @@
                 <p class="card-text">Kategori: Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=laptop" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=laptop" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -121,7 +110,7 @@
                 <p class="card-text">Kategori: Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=kamera" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=kamera" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -136,7 +125,7 @@
                 <p class="card-text">Kategori: Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=speaker" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=speaker" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -151,7 +140,7 @@
                 <p class="card-text">Kategori: Elektronik</p>
                 <span class="badge bg-danger">Tidak tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=mic" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=mic" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -166,7 +155,7 @@
                 <p class="card-text">Kategori: Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=proyektor" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=proyektor" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -181,7 +170,7 @@
                 <p class="card-text">Kategori: Non Elektronik</p>
                 <span class="badge bg-danger">Tidak tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=tripod" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=tripod" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -196,7 +185,7 @@
                 <p class="card-text">Kategori: Non Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=kursi" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=kursi" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -211,7 +200,7 @@
                 <p class="card-text">Kategori: Non Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=meja" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=meja" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -226,7 +215,7 @@
                 <p class="card-text">Kategori: Non Elektronik</p>
                 <span class="badge bg-danger">Tidak tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=papan-tulis" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=papan-tulis" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>
@@ -241,7 +230,7 @@
                 <p class="card-text">Kategori: Non Elektronik</p>
                 <span class="badge bg-success">Tersedia</span>
                 <div class="mt-3">
-                  <a href="detail.html?id=stand-poster" class="btn btn-warning"> Lihat Detail </a>
+                  <a href="detail.php?id=stand-poster" class="btn btn-warning"> Lihat Detail </a>
                 </div>
               </div>
             </div>

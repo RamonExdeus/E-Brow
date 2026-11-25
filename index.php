@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
       <div class="container">
         <!-- Logo EBROW -->
-        <a class="navbar-brand fw-bold" href="index.html"> 
+        <a class="navbar-brand fw-bold" href="index.php"> 
           <i class="bi bi-box"></i> EBR<span>O</span>W </a>
 
         <!-- Tombol menu untuk tampilan HP -->
@@ -31,7 +31,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
             <li class="nav-item">
-              <a class="nav-link active" href="index.html"> <i class="bi bi-house-door-fill"></i> Beranda </a>
+              <a class="nav-link active" href="index.php"> <i class="bi bi-house-door-fill"></i> Beranda </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#faq"> <i class="bi bi-question-circle-fill"></i>FAQ </a>
@@ -40,27 +40,7 @@
               <a class="nav-link" href="#kontak"> <i class="bi bi-envelope-fill"></i> Kontak </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="katalog.html"> <i class="bi bi-grid-fill"></i> Katalog </a>
-            </li>
-            <!-- Menu akun untuk masuk dan daftar -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-inline-flex align-items-center gap-1 account-trigger" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu Akun">
-                <i class="bi bi-person-circle"></i>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="accountDropdown">
-                <li>
-                  <a class="dropdown-item py-2" href="login_screen.html">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                    Masuk
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item py-2" href="login_screen.html?tab=register">
-                    <i class="bi bi-person-plus me-2"></i>
-                    Daftar
-                  </a>
-                </li>
-              </ul>
+              <a class="nav-link" href="Login_screen.php"> <i class="bi bi-pen-fill"></i> Daftar </a>
             </li>
           </ul>
         </div>
@@ -80,7 +60,7 @@
               </h1>
               <p>Temukan barang yang kamu butuhkan tanpa harus membeli. Lebih praktis, hemat, dan mudah bersama EBROW.</p>
               <!-- Tombol menuju katalog -->
-              <a href="katalog.html" class="btn btn-hero"> Jelajahi Katalog </a>
+              <a href="katalog.php" class="btn btn-hero"> Jelajahi Katalog </a>
             </div>
 
             <!-- Carousel gambar yang berganti otomatis -->
