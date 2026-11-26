@@ -225,29 +225,6 @@ section {
   scroll-margin-top: 75px;
 }
 
-/*  FOOTER  */
-.footer {
-  background-color: #cca333;
-  color: #5e4333;
-  padding: 32px 0;
-  text-align: center;
-}
-
-.footer h4 {
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.footer h4 span {
-  color: #9e7818;
-}
-
-.footer p {
-  font-size: 13px;
-  color: #fcfaf7;
-  margin-bottom: 6px;
-}
-
 /*  TAMPILAN HP  */
 @media (max-width: 768px) {
   .hero {
