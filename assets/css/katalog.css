@@ -8,55 +8,7 @@ body {
   color: #493529;
 }
 
-/* =================================
-   2. NAVBAR
-================================= */
-
-.ebrow-navbar {
-  background-color: #d5ac32;
-  font-family:
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    sans-serif;
-}
-
-.ebrow-navbar .navbar-brand {
-  color: #493529;
-  letter-spacing: 0.5px;
-}
-
-.ebrow-navbar .nav-link {
-  color: #493529;
-  font-weight: 600;
-}
-
-.ebrow-navbar .nav-link:hover,
-.ebrow-navbar .nav-link:focus,
-.ebrow-navbar .nav-link.active {
-  color: #ffffff;
-}
-
-.ebrow-navbar .nav-link i.bi-person-circle {
-  font-size: 1.25rem;
-}
-
-/* Dropdown Akun */
-.ebrow-navbar .dropdown-menu {
-  background-color: #ffffff;
-  min-width: 160px;
-}
-
-.ebrow-navbar .dropdown-item {
-  color: #493529;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.ebrow-navbar .dropdown-item:hover {
-  background-color: #f8f3e8;
-  color: #9e7818;
-}
+/* Navbar styles are shared in assets/css/header.css */
 
 /* =================================
    3. HALAMAN KATALOG
@@ -148,6 +100,13 @@ body {
   object-fit: contain;
   transform: scale(1.2);
   background-color: #fff491;
+}
+
+.barang-placeholder {
+  width: 100%;
+  height: 180px;
+  background-color: #fff491;
+  color: #9e7818;
 }
 
 /* Isi Kartu */

@@ -17,29 +17,7 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Header / Navbar Emas (Sama dengan Landing Page & Katalog) */
-.ebrow-navbar {
-  background-color: var(--ebrow-gold) !important;
-  border-bottom: 1px solid rgba(36, 31, 20, 0.12);
-}
-
-.ebrow-navbar .navbar-brand,
-.ebrow-navbar .nav-link {
-  color: var(--ebrow-dark) !important;
-  font-weight: 600;
-  transition: opacity 0.2s ease;
-}
-
-.ebrow-navbar .nav-link:hover,
-.ebrow-navbar .nav-link:focus,
-.ebrow-navbar .nav-link.active{
-  color: #ffffff !important;
- 
-}
-
-.ebrow-navbar .navbar-toggler {
-  border-color: rgba(36, 31, 20, 0.35);
-}
+/* Header / Navbar uses the shared assets/css/header.css design. */
 
 /* Tombol Utama EBROW (Emas Mustard) */
 .btn-ebrow {

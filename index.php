@@ -1,53 +1,19 @@
-<!doctype html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EBROW - Peminjaman Barang</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
-    <!-- CSS tambahan -->
-    <link rel="stylesheet" href="assets/css/index.css" />
-  </head>
+<?php
+require_once __DIR__ . '/session.php';
 
-  <body>
-    <!--   NAVBAR    -->
-    <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
-      <div class="container">
-        <!-- Logo EBROW -->
-        <a class="navbar-brand fw-bold" href="index.php"> 
-          <i class="bi bi-box"></i> EBROW </a>
+if (isLoggedIn()) {
+    header('Location: ' . (isAdmin() ? 'admin/admin_dashboard.php' : 'user/dashboard_user.php'));
+    exit;
+}
 
-        <!-- Tombol menu untuk tampilan HP -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Daftar menu navigasi -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-            <li class="nav-item">
-              <a class="nav-link active" href="index.php"> <i class="bi bi-house-door-fill"></i> Beranda </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#faq"> <i class="bi bi-question-circle-fill"></i>FAQ </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#kontak"> <i class="bi bi-envelope-fill"></i> Kontak </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="Login_screen.php"> <i class="bi bi-pen-fill"></i> Daftar </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <!-- ================= HERO SECTION ================= -->
+$pageTitle = 'Peminjaman Barang';
+$activeNav = 'beranda';
+$base = '';
+$pageCss = 'assets/css/index.css';
+$bodyClass = '';
+require __DIR__ . '/partials/header.php';
+?>
+<!-- ================= HERO SECTION ================= -->
     <section class="hero">
       <div class="container">
         <div class="hero-card">
@@ -60,7 +26,7 @@
               </h1>
               <p>Temukan barang yang kamu butuhkan tanpa harus membeli. Lebih praktis, hemat, dan mudah bersama EBROW.</p>
               <!-- Tombol menuju katalog -->
-              <a href="katalog.php" class="btn btn-hero"> Jelajahi Katalog </a>
+              <a href="login_screen.php" class="btn btn-hero"> Masuk untuk Jelajahi </a>
             </div>
 
             <!-- Carousel gambar yang berganti otomatis -->
@@ -177,7 +143,7 @@
 
         <!-- Tombol melihat seluruh barang -->
         <div class="text-center mt-5">
-          <a href="katalog.php" class="btn btn-warning"> Lihat Semua Barang </a>
+          <a href="login_screen.php" class="btn btn-warning"> Masuk untuk Lihat Barang </a>
         </div>
       </div>
     </section>

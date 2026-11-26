@@ -163,7 +163,7 @@ if (!function_exists('renderSidebar')) {
                 </a>
             <?php endforeach; ?>
 
-            <a href="../login_screen.php" class="menu-link logout">
+            <a href="../logout.php" class="menu-link logout">
                 <i class="bi bi-box-arrow-right"></i><span>Logout</span>
             </a>
         </aside>

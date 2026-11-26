@@ -6,57 +6,7 @@ body {
   margin: 0;
 }
 
-/*  NAVBAR  */
-.navbar {
-  background-color: #cca333;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.navbar-brand {
-  font-size: 24px;
-  color: #493529;
-  letter-spacing: 0.5px;
-}
-
-.nav-link {
-  color: #493529;
-  font-weight: 600;
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-.nav-link:hover,
-.nav-link:focus,
-.nav-link.active {
-  color: #ffffff;
-}
-
-.account-trigger::after {
-  vertical-align: middle;
-}
-
-.nav-link i.bi-person-circle {
-  font-size: 24px;
-  line-height: 1;
-}
-
-/* Dropdown menu akun */
-.dropdown-menu {
-  background-color: #ffffff;
-  min-width: 160px;
-}
-
-.dropdown-item {
-  color: #493529;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f3e8;
-  color: #9e7818;
-}
+/* Navbar styles are shared in assets/css/header.css */
 
 /*  HERO SECTION  */
 .hero {

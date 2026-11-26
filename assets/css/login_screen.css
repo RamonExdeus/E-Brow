@@ -137,15 +137,7 @@ body {
   }
 }
 
-/* Header Emas pada Login Screen */
-.ebrow-navbar {
-  background-color: #d5ac32 !important;
-  border-bottom: 1px solid rgba(36, 31, 20, 0.12);
-}
-
-.ebrow-navbar .navbar-brand {
-  color: #241f14 !important;
-}
+/* Header uses the shared assets/css/header.css design. */
 
 .btn-ebrow-nav {
   background-color: #241f14;

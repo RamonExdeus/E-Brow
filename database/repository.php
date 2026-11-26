@@ -1,6 +1,6 @@
 <?php
 /**
- * Kumpulan query dan utilitas yang dipakai halaman admin EBROW.
+ * Kumpulan query dan utilitas yang dipakai halaman admin dan user EBROW.
  * Semua data ditarik dari database; tidak ada data contoh hardcoded.
  */
 require_once __DIR__ . '/db.php';
@@ -27,6 +27,20 @@ function statusClass(string $status): string
         'Sedang Dipinjam' => 'borrowed',
         'Selesai' => 'done',
         default => 'waiting',
+    };
+}
+
+/** Kelas badge Bootstrap untuk status peminjaman di halaman user. */
+function statusBootstrapClass(string $status): string
+{
+    return match ($status) {
+        'Menunggu Persetujuan' => 'bg-warning text-dark',
+        'Disetujui', 'Siap Diambil' => 'bg-info text-dark',
+        'Sedang Dipinjam' => 'bg-primary',
+        'Ditolak' => 'bg-danger',
+        'Dibatalkan' => 'bg-secondary',
+        'Selesai' => 'bg-success',
+        default => 'bg-secondary',
     };
 }
 
@@ -261,6 +275,71 @@ function fetchBarangById(int $id): ?array
     return $row ?: null;
 }
 
+/** Detail barang lengkap dengan nama kategori untuk halaman user. */
+function fetchBarangDetailById(int $id): ?array
+{
+    $conn = getDBConnection();
+    $stmt = $conn->prepare("
+        SELECT b.*, k.nama_kategori
+        FROM barang b
+        JOIN kategori_barang k ON k.id_kategori = b.id_kategori
+        WHERE b.id_barang = ?
+    ");
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+
+    return $row ?: null;
+}
+
+/** Format harga sewa yang dipakai di katalog dan detail. */
+function formatHargaSewa($nilai): string
+{
+    return 'Rp' . number_format((float) $nilai, 0, ',', '.') . ' / hari';
+}
+
+/** Path foto di database relatif terhadap root aplikasi. */
+function fotoBarangUrl($path): string
+{
+    $path = trim((string) $path);
+    if ($path === '') {
+        return '';
+    }
+    if (preg_match('#^(https?:)?//#i', $path) || $path[0] === '/') {
+        return $path;
+    }
+
+    return ltrim($path, '/');
+}
+
+/** Path foto yang dipakai halaman di folder user/. */
+function fotoBarangUrlUser($path): string
+{
+    $foto = fotoBarangUrl($path);
+    if ($foto === '') {
+        return '';
+    }
+    if (preg_match('#^(https?:)?//#i', $foto) || $foto[0] === '/') {
+        return $foto;
+    }
+
+    return '../' . ltrim($foto, '/');
+}
+
+/** Apakah file foto barang benar-benar tersedia? */
+function fotoBarangTersedia($path): bool
+{
+    $foto = fotoBarangUrl($path);
+    if ($foto === '') {
+        return false;
+    }
+    if (preg_match('#^(https?:)?//#i', $foto) || $foto[0] === '/') {
+        return true;
+    }
+
+    return is_file(dirname(__DIR__) . '/' . ltrim($foto, '/'));
+}
+
 /** Simpan barang baru atau perbarui barang yang sudah ada. */
 function saveBarang(array $post, array $files, ?int $id): array
 {
@@ -453,6 +532,37 @@ function fetchUserById(int $id): ?array
     return $baris ?: null;
 }
 
+/** Ringkasan peminjaman milik satu pengguna (dashboard dan profil). */
+function fetchUserRingkasan(int $idUser): array
+{
+    $conn = getDBConnection();
+    $stmt = $conn->prepare("
+        SELECT
+            COUNT(*) AS total,
+            SUM(status_peminjaman = 'Sedang Dipinjam') AS sedang_dipinjam,
+            SUM(status_peminjaman = 'Menunggu Persetujuan') AS menunggu,
+            SUM(status_peminjaman = 'Selesai') AS selesai,
+            SUM(
+                status_peminjaman = 'Selesai'
+                AND waktu_kembali_aktual IS NOT NULL
+                AND waktu_kembali_aktual <= CONCAT(tanggal_kembali, ' ', COALESCE(batas_kembali_jam, '23:59:59'))
+            ) AS tepat_waktu
+        FROM peminjaman
+        WHERE id_user = ?
+    ");
+    $stmt->bind_param('i', $idUser);
+    $stmt->execute();
+    $baris = $stmt->get_result()->fetch_assoc() ?: [];
+
+    return [
+        'total' => (int) ($baris['total'] ?? 0),
+        'sedang_dipinjam' => (int) ($baris['sedang_dipinjam'] ?? 0),
+        'menunggu' => (int) ($baris['menunggu'] ?? 0),
+        'selesai' => (int) ($baris['selesai'] ?? 0),
+        'tepat_waktu' => (int) ($baris['tepat_waktu'] ?? 0),
+    ];
+}
+
 /** Tambah pengguna baru atau perbarui data pengguna yang sudah ada. */
 function saveUser(array $post, ?int $id): array
 {
@@ -549,6 +659,59 @@ function saveUser(array $post, ?int $id): array
     }
 }
 
+/** Perbarui data diri akun yang sedang login tanpa mengubah role/verifikasi. */
+function simpanProfilUser(int $idUser, array $post): array
+{
+    $pengguna = fetchUserById($idUser);
+    if (!$pengguna) {
+        return ['ok' => false, 'message' => 'Akun tidak ditemukan.'];
+    }
+
+    $hasil = saveUser([
+        'nama_lengkap' => $post['nama_lengkap'] ?? '',
+        'nim_anggota' => $post['nim_anggota'] ?? '',
+        'email' => $post['email'] ?? '',
+        'no_telepon' => $post['no_telepon'] ?? '',
+        'prodi_organisasi' => $post['prodi_organisasi'] ?? '',
+        'role' => $pengguna['role'],
+        'is_terverifikasi' => (int) $pengguna['is_terverifikasi'],
+    ], $idUser);
+
+    if ($hasil['ok']) {
+        $hasil['message'] = 'Data profil berhasil diperbarui.';
+    }
+
+    return $hasil;
+}
+
+/** Ubah password akun setelah memverifikasi password lama. */
+function ubahPasswordUser(int $idUser, string $lama, string $baru, string $konfirmasi): array
+{
+    if ($baru !== $konfirmasi) {
+        return ['ok' => false, 'message' => 'Konfirmasi password baru tidak sesuai.'];
+    }
+    if (strlen($baru) < 8) {
+        return ['ok' => false, 'message' => 'Password baru minimal 8 karakter.'];
+    }
+
+    $conn = getDBConnection();
+    $stmt = $conn->prepare('SELECT password_hash FROM users WHERE id_user = ?');
+    $stmt->bind_param('i', $idUser);
+    $stmt->execute();
+    $hashLama = $stmt->get_result()->fetch_row()[0] ?? null;
+
+    if (!$hashLama || !password_verify($lama, (string) $hashLama)) {
+        return ['ok' => false, 'message' => 'Password saat ini tidak sesuai.'];
+    }
+
+    $hashBaru = password_hash($baru, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare('UPDATE users SET password_hash = ? WHERE id_user = ?');
+    $stmt->bind_param('si', $hashBaru, $idUser);
+    $stmt->execute();
+
+    return ['ok' => true, 'message' => 'Password berhasil diubah.'];
+}
+
 function deleteUser(int $id, int $adminId): array
 {
     if ($id <= 0) {
@@ -634,6 +797,43 @@ function fetchPeminjamanList(string $status = '', string $search = '', int $limi
     $stmt->execute();
 
     return [$total, $stmt->get_result()->fetch_all(MYSQLI_ASSOC)];
+}
+
+/** Daftar peminjaman milik satu pengguna, lengkap dengan data barang. */
+function fetchPeminjamanUser(int $idUser, array $statuses = [], int $limit = 10, string $sort = 'terbaru'): array
+{
+    $conn = getDBConnection();
+    $where = ['p.id_user = ?'];
+    $types = 'i';
+    $values = [$idUser];
+
+    if ($statuses) {
+        $placeholders = implode(',', array_fill(0, count($statuses), '?'));
+        $where[] = "p.status_peminjaman IN ($placeholders)";
+        $types .= str_repeat('s', count($statuses));
+        $values = array_merge($values, $statuses);
+    }
+
+    $whereSql = 'WHERE ' . implode(' AND ', $where);
+    $arah = $sort === 'terlama' ? 'ASC' : 'DESC';
+
+    $stmt = $conn->prepare("
+        SELECT p.id_peminjaman, p.nomor_peminjaman, p.jumlah_unit, p.status_peminjaman,
+            p.tanggal_pengajuan, p.tanggal_pinjam, p.tanggal_kembali, p.batas_kembali_jam,
+            p.waktu_kembali_aktual, p.kondisi_verifikasi_kembali, p.catatan_admin, p.alasan_penolakan,
+            b.id_barang, b.nama_barang, b.kode_barang, b.foto_barang, b.kondisi_barang,
+            k.nama_kategori
+        FROM peminjaman p
+        JOIN barang b ON b.id_barang = p.id_barang
+        JOIN kategori_barang k ON k.id_kategori = b.id_kategori
+        $whereSql
+        ORDER BY p.tanggal_pengajuan $arah, p.id_peminjaman $arah
+        LIMIT ?
+    ");
+    $stmt->bind_param($types . 'i', ...array_merge($values, [$limit]));
+    $stmt->execute();
+
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 /**

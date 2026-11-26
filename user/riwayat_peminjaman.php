@@ -1,61 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EBROW • Riwayat Peminjaman</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-  <!-- External CSS User -->
-  <link rel="stylesheet" href="../assets/css/user.css" />
-</head>
-<body class="d-flex flex-column min-vh-100">
+<?php
+require_once __DIR__ . '/../session.php';
+requireLogin('../login_screen.php');
+require_once __DIR__ . '/../database/repository.php';
 
-  <!-- Navbar Pengguna -->
-  <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
-    <div class="container-fluid px-0">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.php">
-        <i class="bi bi-box fs-5"></i>
-        <span>EBROW</span>
-      </a>
+$idUser = (int) ($_SESSION['id_user'] ?? 0);
+if (!fetchUserById($idUser)) {
+    session_destroy();
+    header('Location: ../login_screen.php');
+    exit;
+}
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+$riwayatList = fetchPeminjamanUser($idUser, ['Selesai', 'Dibatalkan', 'Ditolak'], 100);
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
-        <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard_user.php">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../katalog.php">Katalog Barang</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active fw-semibold" href="riwayat_peminjaman.php">Riwayat</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-              <i class="bi bi-person-circle fs-5"></i>
-              <span>Akun Saya</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-              <li><a class="dropdown-item py-2" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
+$pageTitle = 'Riwayat Peminjaman';
+$activeNav = 'riwayat';
+$base = '../';
+$pageCss = 'assets/css/user.css';
+require __DIR__ . '/../partials/header.php';
+?>
+<!-- Main Content -->
   <main class="container my-4 flex-grow-1">
     <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5">
       <div class="mb-4">
@@ -67,15 +30,16 @@
       <div class="row g-2 mb-4">
         <div class="col-md-8">
           <div class="position-relative">
-            <input type="text" id="searchHistory" class="form-control ebrow-input ps-5" placeholder="Cari nama barang atau kode transaksi..." onkeyup="filterHistory()" />
+            <input type="text" id="searchHistory" class="form-control ebrow-input ps-5" placeholder="Cari nama barang atau kode transaksi..." />
             <i class="bi bi-search text-secondary position-absolute top-50 start-0 translate-middle-y ms-3"></i>
           </div>
         </div>
         <div class="col-md-4">
-          <select id="filterStatusHistory" class="form-select ebrow-input" onchange="filterHistory()">
+          <select id="filterStatusHistory" class="form-select ebrow-input">
             <option value="all">Semua Status Riwayat</option>
             <option value="Selesai">Selesai Dikembalikan</option>
             <option value="Dibatalkan">Dibatalkan</option>
+            <option value="Ditolak">Ditolak</option>
           </select>
         </div>
       </div>
@@ -94,93 +58,69 @@
             </tr>
           </thead>
           <tbody class="small">
-            <tr data-status="Selesai">
-              <td class="fw-semibold text-dark">#BRW-011</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/laptop.jpeg" alt="Laptop" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark item-name">Laptop Asus VivoBook</div>
-                    <div class="text-secondary user-item-subtext">1 Unit • Kondisi: Baik</div>
-                  </div>
-                </div>
-              </td>
-              <td>10 Nov – 13 Nov 2026</td>
-              <td>13 Nov 2026</td>
-              <td><span class="badge bg-success rounded-pill px-3 py-2">Selesai</span></td>
-              <td class="text-end">
-                <button type="button" class="btn btn-outline-secondary btn-sm me-1"
-                  onclick="openProofModal('#BRW-011', 'Laptop Asus VivoBook (1 Unit)', '10 Nov – 13 Nov 2026', '13 Nov 2026, 14.20 WIB', 'Lengkap & Baik (Tepat Waktu)')">
-                  Bukti
-                </button>
-                <a href="../katalog.php" class="btn btn-ebrow btn-sm fw-semibold">Pinjam Lagi</a>
-              </td>
-            </tr>
-
-            <tr data-status="Selesai">
-              <td class="fw-semibold text-dark">#BRW-009</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/tripod.jpeg" alt="Tripod" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark item-name">Tripod Takara Heavy Duty</div>
-                    <div class="text-secondary user-item-subtext">2 Unit • Kondisi: Baik</div>
-                  </div>
-                </div>
-              </td>
-              <td>02 Nov – 04 Nov 2026</td>
-              <td>04 Nov 2026</td>
-              <td><span class="badge bg-success rounded-pill px-3 py-2">Selesai</span></td>
-              <td class="text-end">
-                <button type="button" class="btn btn-outline-secondary btn-sm me-1"
-                  onclick="openProofModal('#BRW-009', 'Tripod Takara Heavy Duty (2 Unit)', '02 Nov – 04 Nov 2026', '04 Nov 2026, 11.05 WIB', 'Lengkap & Baik (Tepat Waktu)')">
-                  Bukti
-                </button>
-                <a href="../katalog.php" class="btn btn-ebrow btn-sm fw-semibold">Pinjam Lagi</a>
-              </td>
-            </tr>
-
-            <tr data-status="Selesai">
-              <td class="fw-semibold text-dark">#BRW-006</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/meja.jpeg" alt="Meja" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark item-name">Meja Lipat Portable</div>
-                    <div class="text-secondary user-item-subtext">3 Unit • Kondisi: Baik</div>
-                  </div>
-                </div>
-              </td>
-              <td>21 Okt – 23 Okt 2026</td>
-              <td>23 Okt 2026</td>
-              <td><span class="badge bg-success rounded-pill px-3 py-2">Selesai</span></td>
-              <td class="text-end">
-                <button type="button" class="btn btn-outline-secondary btn-sm me-1"
-                  onclick="openProofModal('#BRW-006', 'Meja Lipat Portable (3 Unit)', '21 Okt – 23 Okt 2026', '23 Okt 2026, 15.45 WIB', 'Lengkap & Baik (Tepat Waktu)')">
-                  Bukti
-                </button>
-                <a href="../katalog.php" class="btn btn-ebrow btn-sm fw-semibold">Pinjam Lagi</a>
-              </td>
-            </tr>
-
-            <tr data-status="Dibatalkan">
-              <td class="fw-semibold text-dark">#BRW-004</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/speaker.jpeg" alt="Speaker" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark item-name">Speaker Portable Aktif</div>
-                    <div class="text-secondary user-item-subtext">1 Unit • Dibatalkan oleh pengguna</div>
-                  </div>
-                </div>
-              </td>
-              <td>12 Okt – 13 Okt 2026</td>
-              <td>-</td>
-              <td><span class="badge bg-secondary rounded-pill px-3 py-2">Dibatalkan</span></td>
-              <td class="text-end">
-                <a href="../katalog.php" class="btn btn-ebrow btn-sm fw-semibold">Pinjam Lagi</a>
-              </td>
-            </tr>
+            <?php if (!$riwayatList): ?>
+              <tr>
+                <td colspan="6" class="text-center text-secondary py-4">Belum ada riwayat peminjaman.</td>
+              </tr>
+            <?php else: ?>
+              <?php foreach ($riwayatList as $pinjam): ?>
+                <?php
+                $status = (string) $pinjam['status_peminjaman'];
+                $periode = formatTanggalPendek($pinjam['tanggal_pinjam']) . ' – ' . formatTanggalPendek($pinjam['tanggal_kembali']);
+                $waktuKembali = $pinjam['waktu_kembali_aktual']
+                    ? formatTanggalPendek($pinjam['waktu_kembali_aktual'])
+                    : '-';
+                $waktuKembaliPanjang = $pinjam['waktu_kembali_aktual']
+                    ? $waktuKembali . ', ' . date('H.i', strtotime((string) $pinjam['waktu_kembali_aktual'])) . ' WIB'
+                    : '-';
+                $kondisiVerifikasi = (string) ($pinjam['kondisi_verifikasi_kembali'] ?? '');
+                $alasan = trim((string) ($pinjam['alasan_penolakan'] ?? ''));
+                $subtext = (int) $pinjam['jumlah_unit'] . ' Unit • '
+                    . ($alasan !== '' && in_array($status, ['Dibatalkan', 'Ditolak'], true)
+                        ? $status . ': ' . $alasan
+                        : 'Kondisi: ' . $pinjam['kondisi_barang']);
+                ?>
+                <tr data-status="<?= esc($status) ?>" data-kode="<?= esc(strtolower($pinjam['nomor_peminjaman'])) ?>" data-barang="<?= esc(strtolower($pinjam['nama_barang'])) ?>">
+                  <td class="fw-semibold text-dark"><?= esc($pinjam['nomor_peminjaman']) ?></td>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <?php if (fotoBarangTersedia($pinjam['foto_barang'])): ?>
+                        <img src="<?= esc(fotoBarangUrlUser($pinjam['foto_barang'])) ?>" alt="<?= esc($pinjam['nama_barang']) ?>" class="rounded-3 border user-item-thumb" />
+                      <?php else: ?>
+                        <span class="rounded-3 border user-item-thumb bg-light d-flex align-items-center justify-content-center">
+                          <i class="bi bi-image text-secondary"></i>
+                        </span>
+                      <?php endif; ?>
+                      <div>
+                        <div class="fw-semibold text-dark item-name"><?= esc($pinjam['nama_barang']) ?></div>
+                        <div class="text-secondary user-item-subtext"><?= esc($subtext) ?></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><?= esc($periode) ?></td>
+                  <td><?= esc($waktuKembali) ?></td>
+                  <td>
+                    <span class="badge <?= esc(statusBootstrapClass($status)) ?> rounded-pill px-3 py-2">
+                      <?= esc($status) ?>
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <?php if ($status === 'Selesai'): ?>
+                      <button type="button" class="btn btn-outline-secondary btn-sm me-1"
+                        data-bs-toggle="modal" data-bs-target="#proofModal"
+                        data-kode="<?= esc($pinjam['nomor_peminjaman']) ?>"
+                        data-barang="<?= esc($pinjam['nama_barang'] . ' (' . (int) $pinjam['jumlah_unit'] . ' Unit)') ?>"
+                        data-periode="<?= esc($periode) ?>"
+                        data-waktu="<?= esc($waktuKembaliPanjang) ?>"
+                        data-kondisi="<?= esc($kondisiVerifikasi !== '' ? $kondisiVerifikasi : '-') ?>">
+                        Bukti
+                      </button>
+                    <?php endif; ?>
+                    <a href="../detail.php?id=<?= (int) $pinjam['id_barang'] ?>" class="btn btn-ebrow btn-sm fw-semibold">Pinjam Lagi</a>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
@@ -201,7 +141,7 @@
               <i class="bi bi-patch-check-fill fs-2"></i>
             </div>
             <h6 class="fw-bold mb-0">Pengembalian Terverifikasi</h6>
-            <span class="text-secondary" id="proof-kode">#BRW-011</span>
+            <span class="text-secondary" id="proof-kode">-</span>
           </div>
 
           <div class="bg-light rounded-3 p-3">
@@ -239,35 +179,35 @@
   <!-- Bootstrap 5 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    const searchHistory = document.getElementById('searchHistory');
+    const filterStatusHistory = document.getElementById('filterStatusHistory');
+
     function filterHistory() {
-      const keyword = document.getElementById('searchHistory').value.toLowerCase();
-      const statusFilter = document.getElementById('filterStatusHistory').value;
-      const rows = document.querySelectorAll('#historyTable tbody tr');
+      const keyword = searchHistory.value.toLowerCase();
+      const statusFilter = filterStatusHistory.value;
+      const rows = document.querySelectorAll('#historyTable tbody tr[data-status]');
 
       rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const rowStatus = row.getAttribute('data-status');
-        const matchSearch = text.includes(keyword);
-        const matchStatus = (statusFilter === 'all' || rowStatus === statusFilter);
-
-        if (matchSearch && matchStatus) {
-          row.classList.remove('d-none');
-        } else {
-          row.classList.add('d-none');
-        }
+        const teks = (row.dataset.kode + ' ' + row.dataset.barang + ' ' + row.textContent).toLowerCase();
+        const cocok = teks.includes(keyword) && (statusFilter === 'all' || row.dataset.status === statusFilter);
+        row.classList.toggle('d-none', !cocok);
       });
     }
 
-    function openProofModal(kode, barang, periode, waktu, kondisi) {
-      document.getElementById('proof-kode').textContent = kode;
-      document.getElementById('proof-barang').textContent = barang;
-      document.getElementById('proof-periode').textContent = periode;
-      document.getElementById('proof-waktu').textContent = waktu;
-      document.getElementById('proof-kondisi').textContent = kondisi;
+    searchHistory.addEventListener('input', filterHistory);
+    filterStatusHistory.addEventListener('change', filterHistory);
 
-      const modal = new bootstrap.Modal(document.getElementById('proofModal'));
-      modal.show();
-    }
+    const proofModal = document.getElementById('proofModal');
+    proofModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      if (!button || !button.dataset.kode) return;
+
+      document.getElementById('proof-kode').textContent = button.dataset.kode;
+      document.getElementById('proof-barang').textContent = button.dataset.barang;
+      document.getElementById('proof-periode').textContent = button.dataset.periode;
+      document.getElementById('proof-waktu').textContent = button.dataset.waktu;
+      document.getElementById('proof-kondisi').textContent = button.dataset.kondisi;
+    });
   </script>
 </body>
 </html>

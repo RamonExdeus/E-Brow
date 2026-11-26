@@ -1,96 +1,111 @@
-<!doctype html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detail Barang - EBROW</title>
+<?php
+require_once __DIR__ . '/session.php';
+requireLogin('login_screen.php');
+require_once __DIR__ . '/database/repository.php';
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+$idBarang = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, [
+    'options' => ['min_range' => 1],
+]);
+$barang = $idBarang ? fetchBarangDetailById((int) $idBarang) : null;
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+$namaBarang = $barang['nama_barang'] ?? 'Barang tidak ditemukan';
+$kodeBarang = $barang['kode_barang'] ?? '-';
+$kategoriBarang = $barang['nama_kategori'] ?? '-';
+$deskripsiBarang = $barang['deskripsi'] ?? '';
+$hargaBarang = $barang ? formatHargaSewa($barang['harga_per_hari']) : '-';
+$kondisiBarang = $barang['kondisi_barang'] ?? '-';
+$stokTersedia = (int) ($barang['stok_tersedia'] ?? 0);
+$stokTotal = (int) ($barang['stok_total'] ?? 0);
+$tersedia = $barang !== null
+    && $barang['status_ketersediaan'] === 'Tersedia'
+    && $stokTersedia > 0;
+$statusBarang = $tersedia ? 'Tersedia' : 'Tidak tersedia';
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+$fotoBarang = fotoBarangUrl($barang['foto_barang'] ?? '');
+$pathLokal = __DIR__ . '/' . ltrim($fotoBarang, '/');
+$adaFoto = $fotoBarang !== ''
+    && (preg_match('#^(https?:)?//#i', $fotoBarang) || is_file($pathLokal));
 
-    <!-- CSS tambahan -->
-    <link rel="stylesheet" href="assets/css/detail.css" />
-  </head>
-
-  <body>
-     <!--   Navbar   -->
-  <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
-    <div class="container-fluid px-0">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.php">
-        <i class="bi bi-box fs-5"></i> EBROW
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
-        <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
-          <li class="nav-item">
-            <a class="nav-link" href="user/dashboard_user.php">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="katalog.php">Katalog Barang</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="user/status_peminjaman.php">Status Peminjaman</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="user/riwayat_peminjaman.php">Riwayat</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-              <i class="bi bi-person-circle fs-5"></i>
-              <span>Akun Saya</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-              <li><a class="dropdown-item py-2 active" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-    <!-- DETAIL BARANG -->
-    <section class="detail-barang py-5">
-      <div class="container">
+$pageTitle = 'Detail Barang';
+$activeNav = 'katalog';
+$base = '';
+$pageCss = 'assets/css/detail.css';
+$bodyClass = 'd-flex flex-column min-vh-100';
+require __DIR__ . '/partials/header.php';
+?>
+<main class="flex-grow-1">
+  <!-- DETAIL BARANG -->
+  <section class="detail-barang py-5">
+    <div class="container">
+      <?php if ($barang === null): ?>
+        <div class="alert alert-warning rounded-4" role="alert">
+          <h1 class="h4 fw-bold mb-2">Barang tidak ditemukan</h1>
+          <p class="mb-3">Barang yang kamu cari tidak tersedia atau ID-nya tidak valid.</p>
+          <a href="katalog.php" class="btn btn-warning">Kembali ke Katalog</a>
+        </div>
+      <?php else: ?>
         <div class="row g-4">
           <!-- Foto Barang -->
           <div class="col-md-5">
             <div class="card border-0 shadow-sm">
-              <img src="assets/images/laptop.jpeg" id="gambarBarang" class="img-fluid rounded" alt="Laptop" />
+              <?php if ($adaFoto): ?>
+                <img src="<?= esc($fotoBarang) ?>" id="gambarBarang" class="img-fluid rounded gambar-barang" alt="<?= esc($namaBarang) ?>" />
+              <?php else: ?>
+                <div class="gambar-placeholder d-flex flex-column align-items-center justify-content-center text-muted rounded" role="img" aria-label="Belum ada foto <?= esc($namaBarang) ?>">
+                  <i class="bi bi-image fs-1 mb-2"></i>
+                  <span class="small">Belum ada foto</span>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
 
           <!-- Informasi Barang -->
           <div class="col-md-7">
-            <h2 class="fw-bold" id="namaBarang">Laptop</h2>
-            <p class="text-muted" id="kategoriBarang">Kategori: Elektronik</p>
-            <span class="badge bg-success" id="statusBarang"> Tersedia </span>
-            <p class="mt-3" id="deskripsiBarang">Laptop yang dapat digunakan untuk membantu kegiatan perkuliahan, mengerjakan tugas, dan presentasi.</p>
+            <p class="text-muted small mb-1">Kode: <?= esc($kodeBarang) ?></p>
+            <h2 class="fw-bold" id="namaBarang"><?= esc($namaBarang) ?></h2>
+            <p class="text-muted" id="kategoriBarang">Kategori: <?= esc($kategoriBarang) ?></p>
+            <span class="badge <?= $tersedia ? 'bg-success' : 'bg-danger' ?>" id="statusBarang">
+              <?= esc($statusBarang) ?>
+            </span>
+            <p class="mt-3" id="deskripsiBarang">
+              <?= esc($deskripsiBarang !== '' ? $deskripsiBarang : 'Deskripsi barang belum tersedia.') ?>
+            </p>
+
             <h5 class="mt-4">Informasi Barang</h5>
-            <p class="mb-1" id="hargaBarang">Harga: Rp30.000 / hari</p>
-            <p class="mb-1" id="kondisiBarang">Kondisi: Baik</p>
-            <p class="mb-1" id="jumlahBarang">Jumlah: 2 unit</p>
-            <a href="form-peminjaman.html" id="tombolPeminjaman" class="btn btn-warning mt-3 px-4 py-2">
-              <i class="bi bi-clipboard-check me-2"></i>
-              Pinjam Barang
-            </a>
+            <p class="mb-1" id="hargaBarang">Harga: <?= esc($hargaBarang) ?></p>
+            <p class="mb-1" id="kondisiBarang">Kondisi: <?= esc($kondisiBarang) ?></p>
+            <p class="mb-1" id="jumlahBarang">Jumlah: <?= $stokTersedia ?> unit tersedia dari <?= $stokTotal ?> unit</p>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <?php if ($tersedia): ?>
+                <a href="user/form_peminjaman.php?barang=<?= (int) $barang['id_barang'] ?>" id="tombolPeminjaman" class="btn btn-warning px-4 py-2">
+                  <i class="bi bi-clipboard-check me-2"></i>
+                  Pinjam Barang
+                </a>
+              <?php else: ?>
+                <button type="button" class="btn btn-secondary px-4 py-2" disabled>
+                  <i class="bi bi-x-circle me-2"></i>
+                  Tidak Tersedia
+                </button>
+              <?php endif; ?>
+              <a href="katalog.php" class="btn btn-outline-secondary px-4 py-2">
+                <i class="bi bi-arrow-left me-2"></i>
+                Kembali ke Katalog
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-   
-    <!-- JavaScript -->
-    <script src="assets/js/detail.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+      <?php endif; ?>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="container py-3 text-muted small d-flex flex-column flex-sm-row justify-content-between gap-2">
+  <span>&copy; 2026 EBROW. Semua hak dilindungi.</span>
+  <span>Pinjam dengan mudah. Kembalikan dengan tanggung jawab.</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

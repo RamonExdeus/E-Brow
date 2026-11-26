@@ -9,17 +9,14 @@ function filterBarang() {
   const kategoriDipilih = kategoriFilter.value;
 
   daftarKartu.forEach(function (kartu) {
-    const namaBarang = kartu.querySelector(".card-title").textContent.toLowerCase();
+    const namaBarang = kartu.dataset.nama || "";
+    const kodeBarang = kartu.dataset.kode || "";
     const kategoriBarang = kartu.dataset.kategori;
 
-    const cocokNama = namaBarang.includes(kataKunci);
+    const cocokNama = namaBarang.includes(kataKunci) || kodeBarang.includes(kataKunci);
     const cocokKategori = kategoriDipilih === "semua" || kategoriDipilih === kategoriBarang;
 
-    if (cocokNama && cocokKategori) {
-      kartu.style.display = "";
-    } else {
-      kartu.style.display = "none";
-    }
+    kartu.style.display = cocokNama && cocokKategori ? "" : "none";
   });
 
   // Memeriksa apakah ada barang yang ditemukan

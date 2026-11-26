@@ -1,6 +1,11 @@
 <?php
-session_start();
+require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/database/db.php';
+
+if (isLoggedIn()) {
+    header('Location: ' . (isAdmin() ? 'admin/admin_dashboard.php' : 'user/dashboard_user.php'));
+    exit;
+}
 
 $conn = getDBConnection();
 
@@ -44,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($stmt->execute()) {
                     $new_user_id = $stmt->insert_id;
+                    session_regenerate_id(true);
                     $_SESSION['id_user'] = $new_user_id;
                     $_SESSION['nama_lengkap'] = $nama_lengkap;
                     $_SESSION['email'] = $email;
@@ -79,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ((int) $row['is_terverifikasi'] !== 1) {
                     $error_msg = 'Akun belum terverifikasi. Hubungi admin.';
                 } elseif ($password_valid) {
+                    session_regenerate_id(true);
                     $_SESSION['id_user'] = $row['id_user'];
                     $_SESSION['nama_lengkap'] = $row['nama_lengkap'];
                     $_SESSION['email'] = $row['email'];
@@ -98,47 +105,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$pageTitle = 'Login & Register';
+$activeNav = 'login';
+$base = '';
+$pageCss = 'assets/css/login_screen.css';
+$bodyClass = 'd-flex flex-column min-vh-100';
+require __DIR__ . '/partials/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EBROW • Login & Register</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-  <!-- Custom CSS (Terpisah) -->
-  <link rel="stylesheet" href="assets/css/login_screen.css" />
-</head>
-<body class="d-flex flex-column min-vh-100">
-
- <!-- Navbar -->
-  <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5">
-    <div class="container-fluid px-0">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6" href="index.php">
-        <i class="bi bi-box fs-5"></i>
-        <span>EBROW</span>
-      </a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-md-center gap-md-4 mt-3 mt-md-0">
-          <li class="nav-item">
-            <button type="button" class="btn btn-ebrow-nav btn-sm px-3 py-2 fw-semibold" onclick="window.location.href='index.php'">
-            Kembali
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
+<!-- Main Content -->
   <main class="container my-4 flex-grow-1">
     <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5">
       <div class="row g-4 g-lg-5 align-items-start">

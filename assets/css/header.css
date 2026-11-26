@@ -1,0 +1,51 @@
+/* =========================================
+   EBROW - Header bersama (root + user)
+   Satu desain navbar untuk semua halaman.
+   ========================================= */
+
+.ebrow-navbar {
+  background-color: #d5ac32 !important;
+  border-bottom: 1px solid rgba(73, 53, 41, 0.12);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.ebrow-navbar .navbar-brand {
+  color: #493529 !important;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.ebrow-navbar .nav-link {
+  color: #493529 !important;
+  font-weight: 600;
+}
+
+.ebrow-navbar .nav-link:hover,
+.ebrow-navbar .nav-link:focus,
+.ebrow-navbar .nav-link.active {
+  color: #ffffff !important;
+}
+
+.ebrow-navbar .nav-link i.bi-person-circle {
+  font-size: 1.25rem;
+}
+
+.ebrow-navbar .navbar-toggler {
+  border-color: rgba(73, 53, 41, 0.35);
+}
+
+.ebrow-navbar .dropdown-menu {
+  background-color: #ffffff;
+  min-width: 160px;
+}
+
+.ebrow-navbar .dropdown-item {
+  color: #493529;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ebrow-navbar .dropdown-item:hover {
+  background-color: #f8f3e8;
+  color: #9e7818;
+}

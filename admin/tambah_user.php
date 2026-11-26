@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../session.php';
+requireAdmin('../login_screen.php', '../user/dashboard_user.php');
 require_once __DIR__ . '/../database/repository.php';
 require_once __DIR__ . '/partials/ui.php';
 

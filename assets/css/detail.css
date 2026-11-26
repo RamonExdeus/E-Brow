@@ -6,52 +6,7 @@ body {
   margin: 0;
 }
 
-/*  NAVBAR  */
-.navbar {
-  background-color: #d5ac32;
-}
-
-.ebrow-navbar {
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-.navbar-brand {
-  color: #493529;
-  letter-spacing: 0.5px;
-}
-
-.nav-link {
-  color: #493529;
-  font-weight: 600;
-}
-
-.nav-link:hover,
-.nav-link:focus,
-.nav-link.active {
-  color: #ffffff;
-}
-
-.nav-link i.bi-person-circle {
-  font-size: 1.25rem;
-}
-
-
-/* Dropdown menu akun */
-.dropdown-menu {
-  background-color: #ffffff;
-  min-width: 160px;
-}
-
-.dropdown-item {
-  color: #493529;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f3e8;
-  color: #9e7818;
-}
+/* Navbar styles are shared in assets/css/header.css */
 
 /* Halaman Detail Barang */
 .detail-barang .card {
@@ -61,12 +16,21 @@ body {
   overflow: hidden;
 }
 
-.detail-barang img {
+.detail-barang img.gambar-barang,
+.detail-barang .gambar-placeholder {
   width: 100%;
   height: 320px;
-  object-fit: contain;
   padding: 15px;
   background-color: rgb(252, 231, 138);
+}
+
+.detail-barang img.gambar-barang {
+  object-fit: contain;
+}
+
+.detail-barang .gambar-placeholder {
+  gap: 4px;
+  border-radius: 15px;
 }
 .detail-barang h2 {
   margin-bottom: 15px;

@@ -1,69 +1,41 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EBROW • Dashboard Pengguna</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-  <!-- External CSS User -->
-  <link rel="stylesheet" href="../assets/css/user.css" />
-</head>
-<body class="d-flex flex-column min-vh-100">
-  <!-- Navbar Pengguna -->
-  <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
-    <div class="container-fluid px-0">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6 text-dark" href="dashboard_user.php">
-        <i class="bi bi-box fs-5"></i>
-        <span>EBROW</span>
-      </a>
+<?php
+require_once __DIR__ . '/../session.php';
+requireLogin('../login_screen.php');
+require_once __DIR__ . '/../database/repository.php';
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser" aria-controls="navbarUser" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+$idUser = (int) ($_SESSION['id_user'] ?? 0);
+$pengguna = fetchUserById($idUser);
+if (!$pengguna) {
+    session_destroy();
+    header('Location: ../login_screen.php');
+    exit;
+}
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
-        <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
-          <li class="nav-item">
-            <a class="nav-link active" href="dashboard_user.php">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../katalog.php">Katalog Barang</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="riwayat_peminjaman.php">Riwayat</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle fs-5"></i>
-              <span>Akun Saya</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-              <li><a class="dropdown-item py-2" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+$ringkasan = fetchUserRingkasan($idUser);
+$peminjamanAktif = fetchPeminjamanUser(
+    $idUser,
+    ['Menunggu Persetujuan', 'Disetujui', 'Siap Diambil', 'Sedang Dipinjam'],
+    5
+);
+$namaSapaan = explode(' ', trim($pengguna['nama_lengkap']))[0] ?: 'Pengguna';
 
-  <!-- Main Content -->
+$pageTitle = 'Dashboard Pengguna';
+$activeNav = 'dashboard';
+$base = '../';
+$pageCss = 'assets/css/user.css';
+require __DIR__ . '/../partials/header.php';
+?>
+<!-- Main Content -->
   <main class="container my-4 flex-grow-1">
     <!-- Banner Sapaan -->
     <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5 mb-4">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div>
           <span class="badge bg-light text-dark border mb-2 px-3 py-2 rounded-pill">Dashboard Pengguna</span>
-          <h1 class="h4 fw-bold text-dark mb-1">Selamat Datang di EBROW!</h1>
+          <h1 class="h4 fw-bold text-dark mb-1">Selamat Datang, <?= esc($namaSapaan) ?>!</h1>
           <p class="small text-secondary mb-0">Kelola pengajuan peminjaman barang dan pantau jadwal pengembalianmu di satu tempat.</p>
         </div>
+      </div>
 
       <!-- Kartu Statistik Ringkas -->
       <div class="row g-3 mt-3">
@@ -74,7 +46,7 @@
             </div>
             <div>
               <div class="small text-secondary">Sedang Dipinjam</div>
-              <div class="h4 fw-bold text-dark mb-0">2 Barang</div>
+              <div class="h4 fw-bold text-dark mb-0"><?= $ringkasan['sedang_dipinjam'] ?> Barang</div>
             </div>
           </div>
         </div>
@@ -86,7 +58,7 @@
             </div>
             <div>
               <div class="small text-secondary">Menunggu Persetujuan</div>
-              <div class="h4 fw-bold text-dark mb-0">1 Pengajuan</div>
+              <div class="h4 fw-bold text-dark mb-0"><?= $ringkasan['menunggu'] ?> Pengajuan</div>
             </div>
           </div>
         </div>
@@ -98,7 +70,7 @@
             </div>
             <div>
               <div class="small text-secondary">Peminjaman Selesai</div>
-              <div class="h4 fw-bold text-dark mb-0">5 Transaksi</div>
+              <div class="h4 fw-bold text-dark mb-0"><?= $ringkasan['selesai'] ?> Transaksi</div>
             </div>
           </div>
         </div>
@@ -130,54 +102,40 @@
             </tr>
           </thead>
           <tbody class="small">
-            <tr>
-              <td class="fw-semibold text-dark">#BRW-014</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/kamera.jpeg" alt="Kamera" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark">Kamera DSLR Canon</div>
-                    <div class="text-secondary user-item-subtext">Kategori: Dokumentasi</div>
-                  </div>
-                </div>
-              </td>
-              <td>1 Unit</td>
-              <td>20 Nov 2026</td>
-              <td class="fw-semibold text-danger">24 Nov 2026</td>
-              <td><span class="badge bg-primary rounded-pill px-3 py-2">Sedang Dipinjam</span></td>
-            </tr>
-            <tr>
-              <td class="fw-semibold text-dark">#BRW-015</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/mic.jpeg" alt="Mic Wireless" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark">Microphone Wireless</div>
-                    <div class="text-secondary user-item-subtext">Kategori: Audio</div>
-                  </div>
-                </div>
-              </td>
-              <td>2 Unit</td>
-              <td>21 Nov 2026</td>
-              <td>25 Nov 2026</td>
-              <td><span class="badge bg-primary rounded-pill px-3 py-2">Sedang Dipinjam</span></td>
-            </tr>
-            <tr>
-              <td class="fw-semibold text-dark">#BRW-016</td>
-              <td>
-                <div class="d-flex align-items-center gap-3">
-                  <img src="../assets/images/proyektor.jpeg" alt="Proyektor" class="rounded-3 border user-item-thumb" />
-                  <div>
-                    <div class="fw-semibold text-dark">Proyektor Epson</div>
-                    <div class="text-secondary user-item-subtext">Kategori: Presentasi</div>
-                  </div>
-                </div>
-              </td>
-              <td>1 Unit</td>
-              <td>23 Nov 2026</td>
-              <td>24 Nov 2026</td>
-              <td><span class="badge bg-warning text-dark rounded-pill px-3 py-2">Menunggu Persetujuan</span></td>
-            </tr>
+            <?php if (!$peminjamanAktif): ?>
+              <tr>
+                <td colspan="6" class="text-center text-secondary py-4">Belum ada peminjaman berjalan.</td>
+              </tr>
+            <?php else: ?>
+              <?php foreach ($peminjamanAktif as $pinjam): ?>
+                <tr>
+                  <td class="fw-semibold text-dark"><?= esc($pinjam['nomor_peminjaman']) ?></td>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <?php if (fotoBarangTersedia($pinjam['foto_barang'])): ?>
+                        <img src="<?= esc(fotoBarangUrlUser($pinjam['foto_barang'])) ?>" alt="<?= esc($pinjam['nama_barang']) ?>" class="rounded-3 border user-item-thumb" />
+                      <?php else: ?>
+                        <span class="rounded-3 border user-item-thumb bg-light d-flex align-items-center justify-content-center">
+                          <i class="bi bi-image text-secondary"></i>
+                        </span>
+                      <?php endif; ?>
+                      <div>
+                        <div class="fw-semibold text-dark"><?= esc($pinjam['nama_barang']) ?></div>
+                        <div class="text-secondary user-item-subtext">Kategori: <?= esc($pinjam['nama_kategori']) ?></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><?= (int) $pinjam['jumlah_unit'] ?> Unit</td>
+                  <td><?= esc(formatTanggalPendek($pinjam['tanggal_pinjam'])) ?></td>
+                  <td class="fw-semibold text-danger"><?= esc(formatTanggalPendek($pinjam['tanggal_kembali'])) ?></td>
+                  <td>
+                    <span class="badge <?= esc(statusBootstrapClass($pinjam['status_peminjaman'])) ?> rounded-pill px-3 py-2">
+                      <?= esc($pinjam['status_peminjaman']) ?>
+                    </span>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>

@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../session.php';
+requireLogin('../login_screen.php');
 require_once __DIR__ . '/../database/repository.php';
 
 /** Path gambar di database relatif terhadap root aplikasi, bukan folder user/. */
@@ -117,53 +118,13 @@ $stokBarang = $selectedBarang ? (int) $selectedBarang['stok_tersedia'] : 0;
 $gambarBarang = $selectedBarang ? urlGambarBarang($selectedBarang['foto_barang']) : '';
 $kategoriBarang = $selectedBarang['nama_kategori'] ?? '-';
 $namaBarang = $selectedBarang['nama_barang'] ?? '-';
+$pageTitle = 'Form Peminjaman Barang';
+$activeNav = '';
+$base = '../';
+$pageCss = 'assets/css/user.css';
+require __DIR__ . '/../partials/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EBROW • Form Peminjaman Barang</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/user.css" />
-</head>
-<body class="d-flex flex-column min-vh-100">
-
-  <nav class="navbar navbar-expand-md ebrow-navbar shadow-sm py-3 px-4 px-lg-5 sticky-top">
-    <div class="container-fluid px-0">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-6" href="dashboard_user.php">
-        <i class="bi bi-box fs-5"></i>
-        <span>EBROW</span>
-      </a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser" aria-controls="navbarUser" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse justify-content-end" id="navbarUser">
-        <ul class="navbar-nav align-items-md-center gap-md-3 mt-3 mt-md-0">
-          <li class="nav-item"><a class="nav-link" href="dashboard_user.php">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="../katalog.php">Katalog Barang</a></li>
-          <li class="nav-item"><a class="nav-link" href="status_peminjaman.php">Status Peminjaman</a></li>
-          <li class="nav-item"><a class="nav-link" href="riwayat_peminjaman.php">Riwayat</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle fs-5"></i>
-              <span>Akun Saya</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-              <li><a class="dropdown-item py-2" href="profil_user.php"><i class="bi bi-person me-2"></i>Profil Pengguna</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item py-2 text-danger" href="../login_screen.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <main class="container my-4 flex-grow-1">
+<main class="container my-4 flex-grow-1">
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb small mb-0">
         <li class="breadcrumb-item"><a href="dashboard_user.php" class="ebrow-link text-decoration-none">Dashboard</a></li>
