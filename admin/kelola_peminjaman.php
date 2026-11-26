@@ -267,6 +267,10 @@ $statusFilter = ['Semua', 'Menunggu', 'Disetujui', 'Ditolak', 'Sedang Dipinjam']
                     <input type="hidden" name="action" value="confirm_return">
                     <input type="hidden" name="id" id="returnLoanId" value="">
                     <input type="hidden" name="tab" value="pengembalian">
+                    <?php foreach ($daftarParams as $kunci => $nilai): ?>
+                        <?php if ($kunci === 'tab') continue; ?>
+                        <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+                    <?php endforeach; ?>
                     <div class="dialog-actions">
                         <button type="button" class="btn-cancel" onclick="closeModal('returnModal')">Batal</button>
                         <button type="submit" class="btn-confirm gold-button">Konfirmasi</button>

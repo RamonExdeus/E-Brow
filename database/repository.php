@@ -286,8 +286,7 @@ function saveBarang(array $post, array $files, ?int $id): array
             $kode = 'BRG-' . str_pad((string) ((int) $conn->query('SELECT COALESCE(MAX(id_barang), 0) + 1 FROM barang')->fetch_row()[0]), 3, '0', STR_PAD_LEFT);
             $stmt = $conn->prepare("
                 INSERT INTO barang
-                    (kode_barang, id_kategori, nama_barang, deskripsi, foto_barang, harga_per_hari,
-                     kondisi_barang, stok_total, stok_tersedia, status_ketersediaan)
+                    (kode_barang, id_kategori, nama_barang, deskripsi, foto_barang, harga_per_hari, kondisi_barang, stok_total, stok_tersedia, status_ketersediaan)
                 VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)
             ");
             $stmt->bind_param('sissdsiis', $kode, $kategoriId, $nama, $deskripsi, $harga,
@@ -444,8 +443,7 @@ function fetchUserById(int $id): ?array
 {
     $conn = getDBConnection();
     $stmt = $conn->prepare("
-        SELECT id_user, nama_lengkap, nim_anggota, email, no_telepon,
-               prodi_organisasi, role, is_terverifikasi, created_at
+        SELECT id_user, nama_lengkap, nim_anggota, email, no_telepon, prodi_organisasi, role, is_terverifikasi, created_at
         FROM users WHERE id_user = ?
     ");
     $stmt->bind_param('i', $id);
@@ -513,8 +511,7 @@ function saveUser(array $post, ?int $id): array
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("
                 INSERT INTO users
-                    (nama_lengkap, nim_anggota, email, no_telepon, prodi_organisasi,
-                     password_hash, role, is_terverifikasi)
+                    (nama_lengkap, nim_anggota, email, no_telepon, prodi_organisasi, password_hash, role, is_terverifikasi)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->bind_param('sssssssi', $nama, $nim, $email, $telepon, $prodi, $hash, $role, $terverifikasi);
@@ -625,9 +622,7 @@ function fetchPeminjamanList(string $status = '', string $search = '', int $limi
     $total = (int) $countStmt->get_result()->fetch_row()[0];
 
     $stmt = $conn->prepare("
-        SELECT p.id_peminjaman, p.nomor_peminjaman, p.jumlah_unit, p.status_peminjaman,
-               p.tanggal_pengajuan, p.tanggal_pinjam, p.tanggal_kembali,
-               u.nama_lengkap AS nama_peminjam, b.nama_barang, b.kode_barang, b.kondisi_barang
+        SELECT p.id_peminjaman, p.nomor_peminjaman, p.jumlah_unit, p.status_peminjaman, p.tanggal_pengajuan, p.tanggal_pinjam, p.tanggal_kembali, u.nama_lengkap AS nama_peminjam, b.nama_barang, b.kode_barang, b.kondisi_barang
         FROM peminjaman p
         JOIN users u ON u.id_user = p.id_user
         JOIN barang b ON b.id_barang = p.id_barang
@@ -674,8 +669,7 @@ function fetchReturnList(string $search = '', int $limit = 8, int $offset = 0): 
     $total = (int) $countStmt->get_result()->fetch_row()[0];
 
     $stmt = $conn->prepare("
-        SELECT p.id_peminjaman, p.nomor_peminjaman, p.jumlah_unit, p.tanggal_pinjam, p.tanggal_kembali,
-               u.nama_lengkap AS nama_peminjam, b.nama_barang, b.kode_barang, b.kondisi_barang
+        SELECT p.id_peminjaman, p.nomor_peminjaman, p.jumlah_unit, p.tanggal_pinjam, p.tanggal_kembali, u.nama_lengkap AS nama_peminjam, b.nama_barang, b.kode_barang, b.kondisi_barang
         $dari
         ORDER BY p.tanggal_kembali, p.id_peminjaman
         LIMIT ? OFFSET ?
@@ -690,8 +684,7 @@ function fetchPeminjamanById(int $id): ?array
 {
     $conn = getDBConnection();
     $stmt = $conn->prepare("
-        SELECT p.*, u.nama_lengkap AS nama_peminjam, u.nim_anggota, u.prodi_organisasi,
-               b.nama_barang, b.kode_barang, k.nama_kategori
+        SELECT p.*, u.nama_lengkap AS nama_peminjam, u.nim_anggota, u.prodi_organisasi, b.nama_barang, b.kode_barang, k.nama_kategori
         FROM peminjaman p
         JOIN users u ON u.id_user = p.id_user
         JOIN barang b ON b.id_barang = p.id_barang
@@ -795,5 +788,215 @@ function konfirmasiPengembalian(int $id, int $adminId): array
         error_log($error->getMessage());
 
         return ['ok' => false, 'message' => 'Pengembalian gagal dikonfirmasi.'];
+    }
+}
+
+/** Barang yang dapat dipilih pada form peminjaman pengguna. */
+function fetchBarangUntukPeminjaman(): array
+{
+    $conn = getDBConnection();
+    $result = $conn->query("
+        SELECT b.id_barang, b.kode_barang, b.nama_barang, b.harga_per_hari, b.stok_tersedia, b.foto_barang, k.nama_kategori
+        FROM barang b
+        JOIN kategori_barang k ON k.id_kategori = b.id_kategori
+        WHERE b.status_ketersediaan = 'Tersedia' AND b.stok_tersedia > 0
+        ORDER BY k.nama_kategori, b.nama_barang, b.id_barang
+    ");
+
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+/** Nomor peminjaman berikutnya, dibuat dari data yang sudah ada di database. */
+function nomorPeminjamanBerikutnya(mysqli $conn): string
+{
+    $tahun = date('Y');
+    $prefix = 'PMJ-' . $tahun . '-';
+    $like = $prefix . '%';
+
+    $cek = $conn->prepare("
+        SELECT COALESCE(MAX(CAST(SUBSTRING_INDEX(nomor_peminjaman, '-', -1) AS UNSIGNED)), 0)
+        FROM peminjaman
+        WHERE nomor_peminjaman LIKE ?
+    ");
+    $cek->bind_param('s', $like);
+    $cek->execute();
+    $nomorUrut = (int) $cek->get_result()->fetch_row()[0] + 1;
+
+    while (true) {
+        $nomor = $prefix . str_pad((string) $nomorUrut, 3, '0', STR_PAD_LEFT);
+        $cekNomor = $conn->prepare('SELECT 1 FROM peminjaman WHERE nomor_peminjaman = ? LIMIT 1');
+        $cekNomor->bind_param('s', $nomor);
+        $cekNomor->execute();
+        if (!$cekNomor->get_result()->fetch_row()) {
+            return $nomor;
+        }
+        $nomorUrut++;
+    }
+}
+
+/** Simpan lampiran opsional dan kembalikan path relatif dari root aplikasi. */
+function uploadLampiranPeminjaman($file): ?string
+{
+    if (!is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK || ($file['size'] ?? 0) > 2 * 1024 * 1024) {
+        return null;
+    }
+
+    $tmp = (string) ($file['tmp_name'] ?? '');
+    if ($tmp === '' || !is_uploaded_file($tmp)) {
+        return null;
+    }
+
+    $ext = strtolower(pathinfo((string) ($file['name'] ?? ''), PATHINFO_EXTENSION));
+    $mimeTersedia = [
+        'pdf' => 'application/pdf',
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+    ];
+    if (!isset($mimeTersedia[$ext])) {
+        return null;
+    }
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $tmp);
+        finfo_close($finfo);
+        if ($mime !== $mimeTersedia[$ext]) {
+            return null;
+        }
+    }
+
+    $dir = __DIR__ . '/../uploads/peminjaman';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+
+    $namaFile = 'peminjaman-' . date('Ymd-His') . '-' . bin2hex(random_bytes(5)) . '.' . $ext;
+    if (!move_uploaded_file($tmp, $dir . '/' . $namaFile)) {
+        return null;
+    }
+
+    return 'uploads/peminjaman/' . $namaFile;
+}
+
+/**
+ * Ajukan peminjaman baru. Semua harga, stok, dan identitas peminjam
+ * diambil dari database, bukan dari kolom hidden di form.
+ */
+function ajukanPeminjaman(
+    int $idUser,
+    int $idBarang,
+    int $jumlahUnit,
+    string $tanggalPinjam,
+    string $tanggalKembali,
+    string $keperluan,
+    string $waktuPengambilan = '',
+    array $file = []
+): array {
+    if ($idUser <= 0) {
+        return ['ok' => false, 'message' => 'Data pengguna tidak ditemukan. Silakan login kembali.'];
+    }
+    if ($idBarang <= 0 || $jumlahUnit < 1) {
+        return ['ok' => false, 'message' => 'Barang dan jumlah unit wajib dipilih.'];
+    }
+
+    $mulai = DateTimeImmutable::createFromFormat('!Y-m-d', $tanggalPinjam);
+    $selesai = DateTimeImmutable::createFromFormat('!Y-m-d', $tanggalKembali);
+    if (!$mulai || $mulai->format('Y-m-d') !== $tanggalPinjam ||
+        !$selesai || $selesai->format('Y-m-d') !== $tanggalKembali) {
+        return ['ok' => false, 'message' => 'Format tanggal tidak valid.'];
+    }
+    if ($mulai < new DateTimeImmutable('today')) {
+        return ['ok' => false, 'message' => 'Tanggal mulai pinjam tidak boleh sebelum hari ini.'];
+    }
+    if ($selesai < $mulai) {
+        return ['ok' => false, 'message' => 'Tanggal pengembalian tidak boleh sebelum tanggal pinjam.'];
+    }
+
+    $keperluan = trim($keperluan);
+    if ($keperluan === '') {
+        return ['ok' => false, 'message' => 'Keperluan peminjaman wajib diisi.'];
+    }
+
+    $conn = getDBConnection();
+    $transaksiDimulai = false;
+
+    try {
+        $conn->begin_transaction();
+        $transaksiDimulai = true;
+
+        $stmt = $conn->prepare('SELECT id_user FROM users WHERE id_user = ? LIMIT 1');
+        $stmt->bind_param('i', $idUser);
+        $stmt->execute();
+        if (!$stmt->get_result()->fetch_row()) {
+            $conn->rollback();
+
+            return ['ok' => false, 'message' => 'Data pengguna tidak ditemukan. Silakan login kembali.'];
+        }
+
+        $stmt = $conn->prepare('
+            SELECT nama_barang, harga_per_hari, stok_tersedia, status_ketersediaan
+            FROM barang WHERE id_barang = ? FOR UPDATE
+        ');
+        $stmt->bind_param('i', $idBarang);
+        $stmt->execute();
+        $barang = $stmt->get_result()->fetch_assoc();
+        if (!$barang) {
+            $conn->rollback();
+
+            return ['ok' => false, 'message' => 'Barang yang dipilih tidak ditemukan.'];
+        }
+        if ($barang['status_ketersediaan'] !== 'Tersedia' || (int) $barang['stok_tersedia'] < $jumlahUnit) {
+            $conn->rollback();
+
+            return ['ok' => false, 'message' => 'Barang tidak tersedia dalam jumlah yang diminta.'];
+        }
+
+        $nomor = nomorPeminjamanBerikutnya($conn);
+        $lampiran = uploadLampiranPeminjaman($file);
+
+        $catatan = $keperluan;
+        if ($waktuPengambilan !== '') {
+            $catatan .= "\nWaktu pengambilan: " . $waktuPengambilan;
+        }
+        if ($lampiran !== null) {
+            $catatan .= "\nLampiran: " . $lampiran;
+        }
+
+        $status = 'Menunggu Persetujuan';
+        $stmt = $conn->prepare("
+            INSERT INTO peminjaman
+                (nomor_peminjaman, id_user, id_barang, jumlah_unit,
+                 tanggal_pinjam, tanggal_kembali, keperluan_peminjaman, status_peminjaman)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param('siiissss', $nomor, $idUser, $idBarang, $jumlahUnit,
+            $tanggalPinjam, $tanggalKembali, $catatan, $status);
+        $stmt->execute();
+
+        $conn->commit();
+
+        $durasi = max(1, (int) $mulai->diff($selesai)->format('%a'));
+        $harga = (float) $barang['harga_per_hari'];
+
+        return [
+            'ok' => true,
+            'message' => 'Pengajuan peminjaman berhasil dikirim.',
+            'nomor' => $nomor,
+            'nama_barang' => $barang['nama_barang'],
+            'jumlah_unit' => $jumlahUnit,
+            'durasi' => $durasi,
+            'harga_per_hari' => $harga,
+            'total' => $harga * $jumlahUnit * $durasi,
+        ];
+    } catch (Throwable $error) {
+        if ($transaksiDimulai) {
+            $conn->rollback();
+        }
+        error_log($error->getMessage());
+
+        return ['ok' => false, 'message' => 'Pengajuan gagal disimpan. Periksa kembali input Anda.'];
     }
 }

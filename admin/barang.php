@@ -204,6 +204,9 @@ $urlHalaman = static fn (int $nomor): string => adminUrl('barang.php', array_mer
                           <form method="post" class="d-inline" onsubmit="return confirm('Hapus barang ini?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?= (int) $barang['id_barang'] ?>">
+                            <?php foreach ($daftarParams as $kunci => $nilai): ?>
+                              <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+                            <?php endforeach; ?>
                             <button type="submit" class="btn-small btn-reject">Hapus</button>
                           </form>
                         </div>

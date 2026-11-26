@@ -27,6 +27,8 @@ $totalKategori = count($semuaKategori);
 $totalHalaman = max(1, (int) ceil($totalKategori / $batas));
 $halaman = min($halaman, $totalHalaman);
 $kategoriList = array_slice($semuaKategori, ($halaman - 1) * $batas, $batas);
+$daftarParams = adminListParams($_GET);
+$paramsDaftar = array_merge($daftarParams, ['page' => $halaman]);
 $urlHalaman = static fn (int $nomor): string => adminUrl('kategori_barang.php', ['page' => $nomor]);
 ?>
 <!DOCTYPE html>
@@ -108,6 +110,9 @@ $urlHalaman = static fn (int $nomor): string => adminUrl('kategori_barang.php', 
             </div>
             <form method="post" class="d-flex gap-2 align-items-center">
               <input type="hidden" name="action" value="add">
+              <?php foreach ($paramsDaftar as $kunci => $nilai): ?>
+                <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+              <?php endforeach; ?>
               <input type="text" name="nama_kategori" class="form-control-ebrow" placeholder="Nama kategori baru" required>
               <button type="submit" class="btn-primary-soft"><i class="bi bi-plus"></i>Tambah Kategori</button>
             </form>
@@ -140,6 +145,9 @@ $urlHalaman = static fn (int $nomor): string => adminUrl('kategori_barang.php', 
                         <form method="post" class="d-flex gap-1 align-items-center">
                           <input type="hidden" name="action" value="update">
                           <input type="hidden" name="id" value="<?= (int) $kategori['id_kategori'] ?>">
+                          <?php foreach ($paramsDaftar as $kunci => $nilai): ?>
+                            <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+                          <?php endforeach; ?>
                           <input type="text" name="nama_kategori" class="form-control-ebrow" value="<?= esc($kategori['nama_kategori']) ?>" required>
                           <button type="submit" class="btn-small">Simpan</button>
                         </form>
@@ -154,6 +162,9 @@ $urlHalaman = static fn (int $nomor): string => adminUrl('kategori_barang.php', 
                         <form method="post" class="table-actions justify-content-end" onsubmit="return confirm('Hapus kategori ini?');">
                           <input type="hidden" name="action" value="delete">
                           <input type="hidden" name="id" value="<?= (int) $kategori['id_kategori'] ?>">
+                          <?php foreach ($paramsDaftar as $kunci => $nilai): ?>
+                            <input type="hidden" name="<?= esc($kunci) ?>" value="<?= esc($nilai) ?>">
+                          <?php endforeach; ?>
                           <button type="submit" class="btn-small btn-reject">Hapus</button>
                         </form>
                       </td>

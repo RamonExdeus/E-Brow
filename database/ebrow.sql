@@ -19,6 +19,37 @@
 CREATE DATABASE IF NOT EXISTS `ebrow` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `ebrow`;
 
+-- Dumping structure for table ebrow.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id_user` int unsigned NOT NULL AUTO_INCREMENT,
+  `nama_lengkap` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nim_anggota` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `no_telepon` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `prodi_organisasi` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('user','admin') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
+  `is_terverifikasi` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `nim_anggota` (`nim_anggota`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table ebrow.users: ~0 rows (approximately)
+
+-- Dumping structure for table ebrow.kategori_barang
+CREATE TABLE IF NOT EXISTS `kategori_barang` (
+  `id_kategori` int unsigned NOT NULL AUTO_INCREMENT,
+  `nama_kategori` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_kategori`),
+  UNIQUE KEY `nama_kategori` (`nama_kategori`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table ebrow.kategori_barang: ~0 rows (approximately)
+
 -- Dumping structure for table ebrow.barang
 CREATE TABLE IF NOT EXISTS `barang` (
   `id_barang` int unsigned NOT NULL AUTO_INCREMENT,
@@ -41,17 +72,6 @@ CREATE TABLE IF NOT EXISTS `barang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table ebrow.barang: ~0 rows (approximately)
-
--- Dumping structure for table ebrow.kategori_barang
-CREATE TABLE IF NOT EXISTS `kategori_barang` (
-  `id_kategori` int unsigned NOT NULL AUTO_INCREMENT,
-  `nama_kategori` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_kategori`),
-  UNIQUE KEY `nama_kategori` (`nama_kategori`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table ebrow.kategori_barang: ~0 rows (approximately)
 
 -- Dumping structure for table ebrow.peminjaman
 CREATE TABLE IF NOT EXISTS `peminjaman` (
@@ -86,26 +106,6 @@ CREATE TABLE IF NOT EXISTS `peminjaman` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table ebrow.peminjaman: ~0 rows (approximately)
-
--- Dumping structure for table ebrow.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id_user` int unsigned NOT NULL AUTO_INCREMENT,
-  `nama_lengkap` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nim_anggota` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `no_telepon` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `prodi_organisasi` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` enum('user','admin') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
-  `is_terverifikasi` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_user`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `nim_anggota` (`nim_anggota`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table ebrow.users: ~0 rows (approximately)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
