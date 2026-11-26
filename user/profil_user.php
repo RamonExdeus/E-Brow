@@ -92,12 +92,6 @@ require __DIR__ . '/../partials/header.php';
               <div class="h5 fw-bold text-dark mb-0"><?= $ringkasan['total'] ?></div>
               <div class="text-secondary">Total Pinjam</div>
             </div>
-            <div class="col-6">
-              <div class="h5 fw-bold text-success mb-0">
-                <?= $ringkasan['selesai'] > 0 ? $persentaseTepat . '%' : '-' ?>
-              </div>
-              <div class="text-secondary">Tepat Waktu</div>
-            </div>
           </div>
 
           <div class="ebrow-info-box rounded-3 p-3 small text-secondary text-start mt-4">
