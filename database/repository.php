@@ -104,12 +104,19 @@ function formatTanggalPanjang($value): string
         $bulan[(int) $tanggal->format('n')] . ' ' . $tanggal->format('Y');
 }
 
-/** Akun admin pertama yang dipakai sebagai nama tampilan dan verifikator. */
+/** Akun admin yang sedang login, dipakai sebagai nama tampilan dan verifikator. */
 function fetchAdmin(): array
 {
+    $idUser = (int) ($_SESSION['id_user'] ?? 0);
+    if ($idUser <= 0) {
+        return ['id_user' => 0, 'nama_lengkap' => 'Administrator'];
+    }
+
     $conn = getDBConnection();
-    $result = $conn->query("SELECT id_user, nama_lengkap FROM users WHERE role = 'admin' ORDER BY id_user LIMIT 1");
-    $row = $result->fetch_assoc();
+    $stmt = $conn->prepare("SELECT id_user, nama_lengkap FROM users WHERE id_user = ? AND role = 'admin' LIMIT 1");
+    $stmt->bind_param('i', $idUser);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
 
     return $row ?: ['id_user' => 0, 'nama_lengkap' => 'Administrator'];
 }
