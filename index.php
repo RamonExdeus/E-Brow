@@ -149,7 +149,7 @@ require __DIR__ . '/partials/header.php';
     </section>
 
     <!--  FAQ  -->
-    <section id="faq" class="py-5 bg-light">
+    <section id="faq" class="py-5">
       <div class="container">
         <div class="text-center mb-4">
           <span class="text-warning fw-bold">FAQ</span>
